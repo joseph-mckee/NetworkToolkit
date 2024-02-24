@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="NetworkToolkitModern.App/App.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/MainWindow.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/MainWindowView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/PingView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
