@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -8,6 +9,42 @@ namespace NetworkToolkitModern.Lib.Ping;
 
 public static class PingEx
 {
+    public static async Task<bool> ScanHostAsync(IPAddress address, int timeout, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        using var ping = new System.Net.NetworkInformation.Ping();
+        try
+        {
+            var pingOptions = new PingOptions
+            {
+                DontFragment = true,
+                Ttl = 32
+            };
+
+            // The Ping class's SendPingAsync method takes a CancellationToken
+            var pingReply = await ping.SendPingAsync(address, timeout, new byte[32], pingOptions);
+
+            // Check for cancellation after the operation is complete
+            token.ThrowIfCancellationRequested();
+
+            return pingReply.Status == IPStatus.Success;
+        }
+        catch (OperationCanceledException)
+        {
+            // Log or handle the cancellation if necessary
+            Debug.WriteLine("Ping scan was canceled.");
+            return false;
+        }
+        catch (Exception e)
+        {
+            // For non-cancellation related exceptions, you might want to log the error and decide how to handle it.
+            // Whether to rethrow or to handle it gracefully depends on your use case.
+            Debug.WriteLine($"Exception during Ping scan: {e.Message}");
+            return false;
+        }
+    }
+
+
     public static PingReplyEx Send(IPAddress srcAddress, IPAddress destAddress, int timeout = 5000,
         byte[]? buffer = null, PingOptions? po = null)
     {
@@ -16,8 +53,8 @@ public static class PingEx
             throw new ArgumentException();
 
         //Defining pinvoke args
-        var source = IPMath.IPToBits(srcAddress, false);
-        var destination = IPMath.IPToBits(destAddress, false);
+        var source = IpMath.IpToBits(srcAddress, false);
+        var destination = IpMath.IpToBits(destAddress, false);
         var sendBuffer = buffer;
         var options = new Interop.Option
         {

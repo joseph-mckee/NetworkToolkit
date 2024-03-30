@@ -4,9 +4,15 @@
     <option name="projectPerEditor">
       <map>
         <entry key="NetworkToolkitModern.App/App.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/ArpView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/IpConfigView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/MainWindow.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/MainWindowView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/PingView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/ScanView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/TraceRouteView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/TracerouteView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="Semi.Avalonia/Themes/Index.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
       </map>
     </option>
   </component>

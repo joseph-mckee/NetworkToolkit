@@ -6,8 +6,6 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -21,19 +19,28 @@ public class PingViewModel : ViewModelBase
 {
     private string _attempts = "4";
     private string _buffer = "32";
-    private string _delay = "1000";
+    private CancellationTokenSource? _cancellationTokenSource;
+    private string _delay = "500";
+    private int _failedPings;
     private bool _fragmentable;
     private string _hops = "30";
     private string _host = "8.8.8.8";
-
-    private ObservableCollection<PingReplyModel> _pingReplies;
-    private ObservableCollection<InterfaceModel> _networkInterfaces = new();
-    private string _timeout = "4000";
-    private CancellationTokenSource _cancellationTokenSource;
+    private string _hostname = string.Empty;
+    private bool _isContinuous;
     private bool _isIndeterminate;
+    private bool _isPinging;
+    private bool _isStopped;
+    private ObservableCollection<InterfaceModel> _networkInterfaces = new();
+    private string _packetLoss = "0%";
+    private ObservableCollection<PingReplyModel> _pingReplies;
     private int _progress;
+
+    private ulong _replyTimes;
+    private string _roundTripTime = string.Empty;
     private int _selectedIndex;
-    private InterfaceModel _selectedInterface;
+    private InterfaceModel? _selectedInterface;
+    private int _successfulPings;
+    private string _timeout = "1000";
 
     public PingViewModel()
     {
@@ -48,6 +55,7 @@ public class PingViewModel : ViewModelBase
             {
                 continue;
             }
+
             if (networkInterface.OperationalStatus == OperationalStatus.Up)
                 _networkInterfaces.Add(new InterfaceModel
                 {
@@ -59,7 +67,180 @@ public class PingViewModel : ViewModelBase
                     Index = networkInterface.GetIPProperties().GetIPv4Properties().Index
                 });
         }
+
+        SelectedIndex = 0;
+        IsStopped = true;
         _pingReplies = new ObservableCollection<PingReplyModel>();
+    }
+
+    public async Task StartPing()
+    {
+        var box = MessageBoxManager.GetMessageBoxStandard("Invalid Input", "One or more input is invalid.",
+            ButtonEnum.Ok, Icon.Error);
+        if (!await IsInputValid())
+        {
+            await box.ShowAsync();
+            return;
+        }
+
+        Reset();
+        IsStopped = false;
+        IsPinging = true;
+        _cancellationTokenSource = new CancellationTokenSource();
+        var token = _cancellationTokenSource.Token;
+        await Task.Run(() => PreparePing(token), token);
+        if (token.IsCancellationRequested) return;
+        IsPinging = false;
+    }
+
+    private async Task PreparePing(CancellationToken cancellationToken)
+    {
+        PingOptions pingOptions = new()
+        {
+            Ttl = int.Parse(Hops),
+            DontFragment = !Fragmentable
+        };
+        var buffer = new byte[int.Parse(Buffer)];
+        try
+        {
+            ResolveDnsInBackground(Host, cancellationToken);
+        }
+        catch (Exception)
+        {
+            Debug.WriteLine("DNS Query Cancelled.");
+            throw;
+        }
+
+        if (IsContinuous)
+        {
+            IsIndeterminate = true;
+            while (true)
+                try
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await SendPing(Progress, buffer, pingOptions, cancellationToken);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    break;
+                }
+        }
+        else
+        {
+            for (var i = 0; i < int.Parse(Attempts); i++)
+                try
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await SendPing(i, buffer, pingOptions, cancellationToken);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    break;
+                }
+        }
+
+        IsStopped = true;
+    }
+
+    private async Task SendPing(int index, byte[]? buffer, PingOptions? pingOptions,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (SelectedInterface?.IpAddress is null) return;
+            var source = IPAddress.Parse(SelectedInterface.IpAddress);
+            var dest = IPAddress.Parse(Host);
+            var reply = await Task.Run(() => PingEx.Send(source, dest, int.Parse(Timeout), buffer, pingOptions),
+                cancellationToken);
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                if (reply.Status == IPStatus.Success) SuccessfulPings++;
+                else FailedPings++;
+                PingReplies.Add(new PingReplyModel(reply, index + 1));
+                ReplyTimes += reply.RoundTripTime;
+                Progress++;
+            });
+        }
+        catch (PingException)
+        {
+            StopPinging();
+        }
+
+        try
+        {
+            if (Progress < int.Parse(Attempts) || IsContinuous) await Task.Delay(int.Parse(Delay), cancellationToken);
+        }
+        catch (OperationCanceledException ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task<bool> IsInputValid()
+    {
+        if (!IPAddress.TryParse(Host, out _))
+            try
+            {
+                var addresses = await Dns.GetHostAddressesAsync(Host);
+                if (addresses.Length > 0) Host = addresses[0].ToString();
+            }
+            catch
+            {
+                return false;
+            }
+
+        if (!int.TryParse(Attempts, out _)) return false;
+        if (!int.TryParse(Hops, out _)) return false;
+        if (!int.TryParse(Timeout, out _)) return false;
+        if (!int.TryParse(Buffer, out _)) return false;
+        if (!int.TryParse(Delay, out _)) return false;
+        return true;
+    }
+
+    private async void ResolveDnsInBackground(string address, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        try
+        {
+            var entry = await Dns.GetHostEntryAsync(address, cancellationToken);
+            Dispatcher.UIThread.Invoke(() => { Hostname = entry.HostName; });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+    }
+
+    public void StopPinging()
+    {
+        _cancellationTokenSource?.Cancel();
+        IsPinging = false;
+        IsStopped = true;
+        IsIndeterminate = false;
+        // Progress = int.Parse(Attempts);
+    }
+
+    public void Reset()
+    {
+        StopPinging();
+        SuccessfulPings = 0;
+        FailedPings = 0;
+        PacketLoss = "0%";
+        ReplyTimes = 0;
+        RoundTripTime = string.Empty;
+        Hostname = string.Empty;
+        PingReplies.Clear();
+        Progress = 0;
+    }
+
+    #region Properties
+
+    public bool IsStopped
+    {
+        get => _isStopped;
+        set => this.RaiseAndSetIfChanged(ref _isStopped, value);
     }
 
     public string Host
@@ -115,7 +296,7 @@ public class PingViewModel : ViewModelBase
         get => _progress;
         set => this.RaiseAndSetIfChanged(ref _progress, value);
     }
-    
+
     public ObservableCollection<PingReplyModel> PingReplies
     {
         get => _pingReplies;
@@ -128,131 +309,90 @@ public class PingViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _networkInterfaces, value);
     }
 
-    public InterfaceModel SelectedInterface => _selectedInterface;
-    
+    private InterfaceModel? SelectedInterface => _selectedInterface;
+
     public int SelectedIndex
     {
         get => _selectedIndex;
         set
         {
+            if (value < 0) return;
             this.RaiseAndSetIfChanged(ref _selectedInterface, NetworkInterfaces[value]);
             this.RaiseAndSetIfChanged(ref _selectedIndex, value);
         }
     }
 
-    public async Task StartPing()
+    public bool IsContinuous
     {
-        var box = MessageBoxManager.GetMessageBoxStandard("Invalid Input", "One or more input is invalid.",
-            ButtonEnum.Ok, Icon.Error);
-        if (!IsInputValid()) await box.ShowAsync();
-        _cancellationTokenSource = new CancellationTokenSource();
-        var token = _cancellationTokenSource.Token;
-        await Task.Run(() => PreparePing(token), token);
+        get => _isContinuous;
+        set => this.RaiseAndSetIfChanged(ref _isContinuous, value);
     }
 
-    private async Task PreparePing(CancellationToken cancellationToken)
+    public bool IsPinging
     {
-        PingOptions pingOptions = new()
+        get => _isPinging;
+        set => this.RaiseAndSetIfChanged(ref _isPinging, value);
+    }
+
+    public int SuccessfulPings
+    {
+        get => _successfulPings;
+        set
         {
-            Ttl = int.Parse(Hops),
-            DontFragment = !Fragmentable
-        };
-        var buffer = new byte[int.Parse(Buffer)];
-        // ResolveDnsInBackground(AddressOrHostname!, cancellationToken);
-        if (int.Parse(Attempts) == 0)
-        {
-            IsIndeterminate = true;
-            while (true)
-                try
-                {
-                    await SendPing(Progress, buffer, pingOptions, cancellationToken);
-                }
-                catch (OperationCanceledException ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    break;
-                }
-        }
-        else
-        {
-            for (var i = 0; i < int.Parse(Attempts); i++)
-                try
-                {
-                    await SendPing(i, buffer, pingOptions, cancellationToken);
-                }
-                catch (OperationCanceledException ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    break;
-                }
+            this.RaiseAndSetIfChanged(ref _successfulPings, value);
+            if (SuccessfulPings <= 0 || FailedPings <= 0) return;
+            var average = (float)FailedPings / (FailedPings + SuccessfulPings) * 100;
+            PacketLoss = $"{Math.Round(average, 2)}%";
         }
     }
 
-    private async Task SendPing(int index, byte[]? buffer, PingOptions? pingOptions,
-        CancellationToken cancellationToken)
+    public int FailedPings
     {
-        cancellationToken.ThrowIfCancellationRequested();
-        if (string.IsNullOrEmpty(Host))
+        get => _failedPings;
+        set
         {
-            // StopPinging();
-            // MessageBox.Show("Enter an address or hostname to ping.", "Warning", MessageBoxButton.OK,
-            //     MessageBoxImage.Warning);
-            return;
-        }
-
-        try
-        {
-            var reply = await Task.Run(
-                () => PingEx.Send(
-                    IPAddress.Parse(SelectedInterface.IpAddress),
-                    IPAddress.Parse(Host), int.Parse(Timeout), buffer, pingOptions), cancellationToken);
-            Dispatcher.UIThread.Invoke(() =>
+            this.RaiseAndSetIfChanged(ref _failedPings, value);
+            if (SuccessfulPings <= 0 && FailedPings <= 0) return;
+            if (SuccessfulPings <= 0 && FailedPings > 0)
             {
-                // if (reply.Status == IPStatus.Success)
-                //     SuccessfulPings++;
-                // else
-                //     FailedPings++;
-                PingReplies.Add(new PingReplyModel(reply, index + 1));
-                // ReplyTimes += reply.RoundTripTime;
-                Progress++;
-            });
-        }
-        catch (PingException ex)
-        {
-            // StopPinging();
-            // MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+                PacketLoss = "100%";
+                return;
+            }
 
-        try
-        {
-            if (Progress < int.Parse(Attempts) || int.Parse(Attempts) == 0) await Task.Delay(int.Parse(Delay), cancellationToken);
-        }
-        catch (OperationCanceledException ex)
-        {
-            Debug.WriteLine(ex.Message);
+            var average = (float)FailedPings / (FailedPings + SuccessfulPings) * 100;
+            PacketLoss = $"{Math.Round(average, 2)}%";
         }
     }
 
-    private bool IsInputValid()
+    public string PacketLoss
     {
-        if (!int.TryParse(Attempts, out _)) return false;
-        if (!int.TryParse(Hops, out _)) return false;
-        if (!int.TryParse(Timeout, out _)) return false;
-        if (!int.TryParse(Buffer, out _)) return false;
-        if (!int.TryParse(Delay, out _)) return false;
-        return true;
+        get => _packetLoss;
+        set => this.RaiseAndSetIfChanged(ref _packetLoss, value);
     }
 
-    public void StopPinging()
+    private ulong ReplyTimes
     {
-        _cancellationTokenSource?.Cancel();
-        IsIndeterminate = false;
+        get => _replyTimes;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _replyTimes, value);
+            if (ReplyTimes <= 0 || SuccessfulPings <= 0) return;
+            var average = (float)ReplyTimes / SuccessfulPings;
+            RoundTripTime = $"{Math.Round(average, 2)} ms";
+        }
     }
 
-    public void Reset()
+    public string RoundTripTime
     {
-        StopPinging();
-        PingReplies.Clear();
-        Progress = 0;
+        get => _roundTripTime;
+        set => this.RaiseAndSetIfChanged(ref _roundTripTime, value);
     }
+
+    public string Hostname
+    {
+        get => _hostname;
+        set => this.RaiseAndSetIfChanged(ref _hostname, value);
+    }
+
+    #endregion
 }

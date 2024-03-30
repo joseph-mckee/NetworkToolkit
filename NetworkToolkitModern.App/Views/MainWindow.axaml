@@ -4,24 +4,28 @@
         xmlns:v="using:NetworkToolkitModern.App.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="600"
         x:Class="NetworkToolkitModern.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="NetworkToolkitModern.App">
-
+        Icon="/Assets/LANbow.png"
+        Title="Network Toolkit"
+        FontSize="12"
+        Width="1280" Height="720">
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-
     <TabControl Margin="10">
+        <TabItem IsSelected="{Binding IpConfigViewModel.IsFocused, Mode=OneWayToSource}" Header="IP Config">
+            <v:IpConfigView DataContext="{Binding IpConfigViewModel}" />
+        </TabItem>
+        <TabItem Header="Network Scan">
+            <v:ScanView DataContext="{Binding ScanViewModel}" />
+        </TabItem>
         <TabItem Header="Ping Tool">
             <v:PingView DataContext="{Binding PingViewModel}" />
         </TabItem>
-        <TabItem Header="Traceroute" />
-        <TabItem Header="Scan Tool" />
+        <TabItem Header="Traceroute Tool">
+            <v:TracerouteView DataContext="{Binding TracerouteViewModel}" />
+        </TabItem>
     </TabControl>
-
 </Window>

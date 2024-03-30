@@ -7,7 +7,7 @@ namespace NetworkToolkitModern.Lib.Ping;
 [Serializable]
 public class PingReplyEx
 {
-    private Win32Exception? _exception;
+    private Win32Exception? _exception = new();
 
     internal PingReplyEx(uint nativeCode, int replyStatus, IPAddress ipAddress)
     {

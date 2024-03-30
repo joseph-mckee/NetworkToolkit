@@ -1,16 +1,14 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using NetworkToolkitModern.App.ViewModels;
 
 namespace NetworkToolkitModern.App.Views;
 
-public partial class PingView : ReactiveUserControl<PingViewModel>
+public partial class TracerouteView : UserControl
 {
     private readonly ScrollViewer? _replyScrollViewer;
 
-    public PingView()
+    public TracerouteView()
     {
         InitializeComponent();
         _replyScrollViewer = this.FindControl<ScrollViewer>("ReplyScrollViewer");
