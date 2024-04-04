@@ -1,4 +1,4 @@
 ﻿using NetworkToolkitModern.Lib.IP;
+using NetworkToolkitModern.Lib.Snmp;
 
-Route.GetRoutes();
-
+Snmp.SnmpWalk();

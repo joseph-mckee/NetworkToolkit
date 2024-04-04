@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 
 namespace NetworkToolkitModern.Lib.IP;
 
@@ -6,6 +7,19 @@ public static class Route
 {
     [DllImport("iphlpapi.dll", ExactSpelling = true)]
     private static extern int GetIpForwardTable([Out] byte[] pIpForwardTable, ref ulong pdwSize, bool bOrder);
+
+    public static NetworkInterface GetBestInterface()
+    {
+        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().ToList();
+        return networkInterfaces.First(x =>
+            x.GetIPProperties().GetIPv4Properties().Index == GetRoutes().OrderBy(y => y.Metric1).First().IfIndex);
+    }
+
+    public static int GetMetric(NetworkInterface networkInterface)
+    {
+        return GetRoutes().Where(row => row.IfIndex == networkInterface.GetIPProperties().GetIPv4Properties().Index)
+            .OrderBy(x => x.Metric1).First().Metric1;
+    }
 
     public static List<RouteTableRow> GetRoutes()
     {
@@ -15,10 +29,7 @@ public static class Route
         var buffer = new byte[bufferSize];
         result = GetIpForwardTable(buffer, ref bufferSize, false);
 
-        if (result != 0)
-        {
-            throw new Exception();
-        }
+        if (result != 0) throw new Exception();
 
         var entriesCount = BitConverter.ToInt32(buffer, 0);
         var table = new MibIpForwardTable
@@ -31,7 +42,7 @@ public static class Route
         var bufferPtr = Marshal.AllocHGlobal((int)bufferSize);
 
         var output = new List<RouteTableRow>();
-        
+
         try
         {
             Marshal.Copy(buffer, 0, bufferPtr, (int)bufferSize);
@@ -56,13 +67,12 @@ public static class Route
                     Metric2 = (int)row.dwForwardMetric2,
                     Metric3 = (int)row.dwForwardMetric3,
                     Metric4 = (int)row.dwForwardMetric4,
-                    Metric5 = (int)row.dwForwardMetric5,
+                    Metric5 = (int)row.dwForwardMetric5
                 });
             }
         }
         finally
         {
-            
             Marshal.FreeHGlobal(bufferPtr);
         }
 

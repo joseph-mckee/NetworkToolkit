@@ -14,7 +14,7 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <AssemblyName>Network Toolkit</AssemblyName>
-        <Version>0.1.0</Version>
+        <Version>0.1.2</Version>
         <ApplicationIcon>Assets\LANbow.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -33,19 +33,29 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.7" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
         <PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Semi.Avalonia" Version="11.0.7" />
         <PackageReference Include="Semi.Avalonia.DataGrid" Version="11.0.7" />
+        <PackageReference Include="SnmpSharpNet" Version="0.9.6" />
     </ItemGroup>
 
     <ItemGroup>
         <RdXmlFile Include="rd.xml" />
     </ItemGroup>
-    
-    
+
+
     <ItemGroup>
         <ProjectReference Include="..\NetworkToolkitModern.Lib\NetworkToolkitModern.Lib.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Folder Include="Behaviors\" />
+        <Folder Include="Controls\" />
     </ItemGroup>
 </Project>

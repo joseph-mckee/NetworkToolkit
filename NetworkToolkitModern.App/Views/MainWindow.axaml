@@ -7,6 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="600"
         x:Class="NetworkToolkitModern.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        Background="Black"
         Icon="/Assets/LANbow.png"
         Title="Network Toolkit"
         FontSize="12"
@@ -14,18 +15,37 @@
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
-    <TabControl Margin="10">
-        <TabItem IsSelected="{Binding IpConfigViewModel.IsFocused, Mode=OneWayToSource}" Header="IP Config">
-            <v:IpConfigView DataContext="{Binding IpConfigViewModel}" />
-        </TabItem>
-        <TabItem Header="Network Scan">
-            <v:ScanView DataContext="{Binding ScanViewModel}" />
-        </TabItem>
-        <TabItem Header="Ping Tool">
-            <v:PingView DataContext="{Binding PingViewModel}" />
-        </TabItem>
-        <TabItem Header="Traceroute Tool">
-            <v:TracerouteView DataContext="{Binding TracerouteViewModel}" />
-        </TabItem>
-    </TabControl>
+    <Grid RowDefinitions="*,Auto">
+        <TabControl Margin="10">
+            <TabItem IsSelected="{Binding IpConfigViewModel.IsFocused, Mode=OneWayToSource}" Header="IP Config">
+                <v:IpConfigView DataContext="{Binding IpConfigViewModel}" />
+            </TabItem>
+            <TabItem Header="Network Scan">
+                <v:ScanView DataContext="{Binding ScanViewModel}" />
+            </TabItem>
+            <TabItem Header="Ping Tool">
+                <v:PingView DataContext="{Binding PingViewModel}" />
+            </TabItem>
+            <TabItem Header="Traceroute Tool">
+                <v:TracerouteView DataContext="{Binding TracerouteViewModel}" />
+            </TabItem>
+            <!-- <TabItem Header="SNMP Tool"> -->
+            <!--     <v:SnmpView DataContext="{Binding SnmpViewModel}" /> -->
+            <!-- </TabItem> -->
+        </TabControl>
+        <Border Grid.Row="1" Margin="10,0,10,10" BoxShadow="0 0 10 0 Indigo" CornerRadius="5" BorderBrush="Indigo"
+                BorderThickness="1">
+            <Grid Margin="10" ColumnDefinitions="Auto,Auto,Auto">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Your External IP:  " />
+                    <TextBlock Text="{Binding PublicIpAddress}" />
+                </StackPanel >
+                <Border Grid.Column="1" Width="1" Background="Indigo" Margin="10,0,10,0" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <TextBlock Text="Internet Status:  " />
+                    <TextBlock Text="{Binding ConnectionStatus}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

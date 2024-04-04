@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -15,9 +16,9 @@ public class IpConfigViewModel : ViewModelBase
     private InterfaceInfoModel _currentEntry = new(NetworkInterface.GetAllNetworkInterfaces()[0]);
     private ObservableCollection<InterfaceInfoModel> _interfaceInfoModels = new();
     private ObservableCollection<InterfaceModel> _interfaceModels = new();
+    private bool _isFocused;
     private NetworkInterface[] _networkInterfaces = Array.Empty<NetworkInterface>();
     private int _selectedInterface;
-    private bool _isFocused;
 
     public IpConfigViewModel()
     {
@@ -30,7 +31,7 @@ public class IpConfigViewModel : ViewModelBase
         get => _isFocused;
         set => this.RaiseAndSetIfChanged(ref _isFocused, value);
     }
-    
+
     public ObservableCollection<InterfaceModel> InterfaceModels
     {
         get => _interfaceModels;
@@ -63,19 +64,18 @@ public class IpConfigViewModel : ViewModelBase
 
     private void Refresh()
     {
-        
         try
         {
             while (true)
             {
                 // if (!IsFocused) continue;
                 Update();
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Debug.WriteLine(e);
             throw;
         }
     }

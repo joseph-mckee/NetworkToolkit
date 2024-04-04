@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NetworkToolkitModern.Lib\NetworkToolkitModern.Lib.csproj" />
+        <ProjectReference Include="..\NetworkToolkitModern.Lib\NetworkToolkitModern.Lib.csproj"/>
     </ItemGroup>
 
 </Project>

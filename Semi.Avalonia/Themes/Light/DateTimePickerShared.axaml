@@ -1,0 +1,28 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="DateTimePickerListItemBackground" Color="Transparent" />
+    <SolidColorBrush x:Key="DateTimePickerPopupBackground" Color="White" />
+    <SolidColorBrush x:Key="DateTimePickerFlyoutButtonForeground" Opacity="0.62" Color="#1C1F23" />
+    <SolidColorBrush x:Key="DateTimePickerFlyoutButtonPointeroverForeground" Color="#1C1F23" />
+    <SolidColorBrush x:Key="DateTimePickerFlyoutButtonPressedForeground" Color="#1C1F23" />
+
+    <SolidColorBrush x:Key="DateTimePickerFlyoutButtonBackground" Color="Transparent" />
+    <SolidColorBrush x:Key="DateTimePickerFlyoutButtonPointeroverBackground" Opacity="0.09" Color="#2E3238" />
+    <SolidColorBrush x:Key="DateTimePickerFlyoutButtonPressedBackground" Opacity="0.13" Color="#2E3238" />
+
+    <SolidColorBrush x:Key="DateTimePickerSeparatorBackground" Opacity="0.08" Color="#1C1F23" />
+
+
+    <SolidColorBrush x:Key="DateTimePickerButtonBorderBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="DateTimePickerButtonBackground" Opacity="0.05" Color="#FF2E3238" />
+    <SolidColorBrush x:Key="DateTimePickerButtonForeground" Color="#1C1F23" />
+
+    <SolidColorBrush x:Key="DateTimePickerIconForeground" Opacity="0.62" Color="#1C1F23" />
+    <SolidColorBrush x:Key="DateTimePickerEmptyForeground" Opacity="0.5" Color="#1C1F23" />
+
+    <SolidColorBrush x:Key="DateTimePickerButtonPointeroverBackground" Opacity="0.09" Color="#FF2E3238" />
+    <SolidColorBrush x:Key="DateTimePickerButtonDisabledBorderBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="DateTimePickerButtonDisabledBackground" Opacity="0.02" Color="#2E3238" />
+    <SolidColorBrush x:Key="DateTimePickerButtonDisabledIconForeground" Opacity="0.4" Color="#2E3238" />
+</ResourceDictionary>

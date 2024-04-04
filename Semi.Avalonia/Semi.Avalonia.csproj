@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+<!--    <Import Project="../Package.props"/>-->
+
+    <PropertyGroup>
+        <Title>Semi.Avalonia</Title>
+        <PackageReleaseNotes>Update to 11.0.7</PackageReleaseNotes>
+        <TargetFramework>net7.0</TargetFramework>
+	    <IsTrimmable>false</IsTrimmable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.1.0-beta1"/>
+    </ItemGroup>
+
+</Project>

@@ -8,38 +8,8 @@
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
              x:Class="NetworkToolkitModern.App.Views.TracerouteView">
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:TracerouteViewModel />
     </Design.DataContext>
-    <UserControl.DataTemplates>
-        <!-- Define the DataTemplate for the Person model -->
-        <DataTemplate DataType="m:TracerouteReplyModel">
-            <Border Padding="5">
-                <Grid Loaded="Control_OnLoaded" ColumnDefinitions="Auto,Auto,Auto,Auto,*">
-                    <StackPanel Width="50" Margin="10,0,10,0" Grid.Column="0" Orientation="Horizontal" Spacing="10">
-                        <TextBlock HorizontalAlignment="Center" Text="{Binding Index}" />
-                    </StackPanel>
-                    <StackPanel Width="200" Margin="10,0,10,0" Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Reply From:" FontWeight="Bold" />
-                        <TextBlock Text="{Binding IpAddress}" />
-                    </StackPanel>
-                    <StackPanel Width="130" Margin="10,0,10,0" Grid.Column="2" Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Reply Time:" FontWeight="Bold" />
-                        <TextBlock Text="{Binding RoundTripTime}" />
-                    </StackPanel>
-                    <StackPanel Width="130" Margin="10,0,10,0" Grid.Column="3" Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Status:" FontWeight="Bold" />
-                        <TextBlock Text="{Binding Status}" />
-                    </StackPanel>
-                    <StackPanel Margin="10,0,10,0" Grid.Column="4" Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Hostname:" FontWeight="Bold" />
-                        <TextBlock Text="{Binding HostName}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
-    </UserControl.DataTemplates>
     <UserControl.Styles>
         <Style Selector="TextBlock.label">
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -49,10 +19,10 @@
         <Style Selector="TextBox.field">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="0,10,10,10" />
-            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Styles>
-    <Grid Margin="20" ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
+    <Grid Margin="10" ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
         <Border Grid.RowSpan="2" BoxShadow="0 0 10 0 Indigo" CornerRadius="5" BorderBrush="Indigo"
                 BorderThickness="1" Padding="20">
             <Grid MaxWidth="800" ClipToBounds="True" ColumnDefinitions="*,*"
@@ -94,31 +64,39 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <!-- <Border VerticalAlignment="Bottom" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="40,10,40,10" Height="1" Background="Indigo" CornerRadius="15" /> -->
                 <StackPanel Margin="0,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="9"
                             Grid.Column="0"
                             Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <Button Width="120" Command="{Binding TraceRoute}" Margin="10,0,10,0" Content="Start" />
-                    <!-- <Button Margin="10,0,10,0" -->
-                    <!--         Content="Stop" /> -->
-                    <Button Width="120" Command="{Binding Reset}" Margin="10,0,10,0" Content="Reset" />
+                    <Button IsEnabled="{Binding IsStopped}" Command="{Binding TraceRoute}" Margin="10,0,10,0"
+                            Content="Start" />
+                    <Button IsEnabled="{Binding IsStarted}" Command="{Binding Stop}" Margin="10,0,10,0" Content="Stop" />
+                    <Button IsEnabled="{Binding IsStopped}" Command="{Binding Reset}" Margin="10,0,10,0"
+                            Content="Reset" />
                 </StackPanel>
             </Grid>
         </Border>
         <Border Margin="10,0,0,0" Grid.Row="0" BorderBrush="Indigo" BoxShadow="0 0 10 0 Indigo" CornerRadius="5"
                 BorderThickness="1"
                 Grid.Column="1">
-            <ScrollViewer Margin="10" Name="ReplyScrollViewer" HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Auto">
-                <ListBox Margin="20" ItemsSource="{Binding TracerouteReplyModels}">
-                    <!-- ItemsTemplate is implicitly applied here for each Person model in the People collection -->
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel /> <!-- This will vertically stack all Person entries -->
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ListBox>
-            </ScrollViewer>
+            <DataGrid HorizontalAlignment="Stretch" IsReadOnly="True" CanUserSortColumns="False"
+                      CanUserResizeColumns="True" GridLinesVisibility="Horizontal"
+                      ItemsSource="{Binding TracerouteReplyModels}">
+                <DataGrid.Styles>
+                    <Style Selector="DataGridCell">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                    <Style Selector="DataGridColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.Styles>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width=".5*" Binding="{Binding Index}" Header="Index" />
+                    <DataGridTextColumn Width="*" Binding="{Binding IpAddress}" Header="Reply From" />
+                    <DataGridTextColumn Width=".5*" Binding="{Binding RoundTripTime}" Header="RTT" />
+                    <DataGridTextColumn Width="*" Binding="{Binding Status}" Header="Status" />
+                    <DataGridTextColumn Width="2*" Binding="{Binding HostName}" Header="Hostname" />
+                </DataGrid.Columns>
+            </DataGrid>
         </Border>
     </Grid>
 </UserControl>

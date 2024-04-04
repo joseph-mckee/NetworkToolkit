@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<PingViewModel>();
         collection.AddSingleton<TracerouteViewModel>();
         collection.AddSingleton<IpConfigViewModel>();
+        collection.AddSingleton<SnmpViewModel>();
         collection.AddSingleton<MainWindowViewModel>();
     }
 }

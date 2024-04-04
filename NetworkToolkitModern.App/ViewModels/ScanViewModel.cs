@@ -22,12 +22,12 @@ namespace NetworkToolkitModern.App.ViewModels;
 
 public class ScanViewModel : ViewModelBase
 {
-    private readonly List<List<IPAddress>> _localNetworks = new();
+    private readonly List<IPAddress> _localNetwork;
     private readonly Stopwatch _stopwatch = new();
     private readonly DispatcherTimer _timer = new();
     private readonly VendorLookup _vendorLookup = new();
 
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private CancellationTokenSource? _cancellationTokenSource;
     private string _elapsed = "00:00:00";
 
     private int _goal;
@@ -36,8 +36,6 @@ public class ScanViewModel : ViewModelBase
     private int _progress;
     private string _progressText = "Scanned: 0/0";
     private string _rangeInput = "192.168.1.1-192.168.1.254";
-
-    private bool _reverse;
 
     private ObservableCollection<ScannedHostModel> _scannedHosts = new();
     private int _timeout;
@@ -48,51 +46,19 @@ public class ScanViewModel : ViewModelBase
         ScannedHosts = new ObservableCollection<ScannedHostModel>();
         Progress = 0;
         Goal = 1;
-        foreach (var networkInterface in NetworkInterface.GetAllNetworkInterfaces())
-        {
-            if (networkInterface.OperationalStatus != OperationalStatus.Up) continue;
-            var localIp = networkInterface.GetIPProperties().UnicastAddresses
-                .FirstOrDefault(ip => ip.Address.AddressFamily.Equals(AddressFamily.InterNetwork))
-                ?.Address;
-            var localSubnet = networkInterface.GetIPProperties().UnicastAddresses
-                .FirstOrDefault(ip => ip.Address.Equals(localIp))
-                ?.IPv4Mask;
-            if (localIp == null || localSubnet == null || localIp.Equals(IPAddress.Parse("127.0.0.1"))) continue;
-            var netInfo = new NetInfo(localIp, localSubnet);
-            _localNetworks.Add(netInfo.GetAddressRangeFromNetwork().ToList());
-        }
-
-        try
-        {
-            var hostName = Dns.GetHostName();
-            var hostEntry = Dns.GetHostEntry(hostName);
-            var primaryAddress =
-                hostEntry.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-            if (primaryAddress == null) return;
-            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-            var subnet = IPAddress.Any;
-            foreach (var networkInterface in networkInterfaces)
-            {
-                var ipProperties = networkInterface.GetIPProperties();
-                foreach (var unicastIpAddress in ipProperties.UnicastAddresses)
-                {
-                    if (unicastIpAddress.Address.AddressFamily != AddressFamily.InterNetwork ||
-                        !primaryAddress.Equals(unicastIpAddress.Address)) continue;
-                    subnet = unicastIpAddress.IPv4Mask;
-                    break;
-                }
-            }
-
-            var netInf = new NetInfo(primaryAddress, subnet);
-            var startAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.NetworkAddress) + 1);
-            var endAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.BroadcastAddress) - 1);
-            RangeInput = $"{startAddress}-{endAddress}";
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine($"{e}: Couldn't find range.");
-        }
+        var bestInterface = Route.GetBestInterface();
+        var localIp = bestInterface.GetIPProperties().UnicastAddresses
+            .First(ip => ip.Address.AddressFamily.Equals(AddressFamily.InterNetwork)).Address;
+        var localSubnet = bestInterface.GetIPProperties().UnicastAddresses.First(ip => ip.Address.Equals(localIp))
+            .IPv4Mask;
+        var netInf = new NetInfo(localIp, localSubnet);
+        var startAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.NetworkAddress) + 1);
+        var endAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.BroadcastAddress) - 1);
+        RangeInput = $"{startAddress}-{endAddress}";
+        var netInfo = new NetInfo(localIp, localSubnet);
+        _localNetwork = netInfo.GetAddressRangeFromNetwork().ToList();
     }
+
 
     public bool IsScanning
     {
@@ -148,30 +114,9 @@ public class ScanViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isStopped, value);
     }
 
-    public void Sort(int column)
+    public void Reset()
     {
-        _reverse = !_reverse;
-        IOrderedEnumerable<ScannedHostModel>? sorted = column switch
-        {
-            0 => from item in ScannedHosts orderby item.Hostname select item,
-            1 => from item in ScannedHosts orderby item.IpBits select item,
-            2 => from item in ScannedHosts orderby item.MacAddress select item,
-            3 => from item in ScannedHosts orderby item.Vendor select item,
-            _ => null
-        };
-        if (_reverse)
-        {
-            if (sorted != null) ScannedHosts = new ObservableCollection<ScannedHostModel>(sorted.Reverse());
-        }
-        else if (sorted != null)
-        {
-            ScannedHosts = new ObservableCollection<ScannedHostModel>(sorted);
-        }
-    }
-
-
-    private void Reset()
-    {
+        Stop();
         _stopwatch.Stop();
         _stopwatch.Reset();
         IsScanning = false;
@@ -184,7 +129,7 @@ public class ScanViewModel : ViewModelBase
     public void Stop()
     {
         _stopwatch.Stop();
-        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource?.Cancel();
     }
 
     public async Task StartScan()
@@ -210,7 +155,7 @@ public class ScanViewModel : ViewModelBase
 
             foreach (var host in scanRange)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                cancellationToken.ThrowIfCancellationRequested();
                 await semaphore.WaitAsync(cancellationToken); // Throttle concurrency
 
                 var task = Task.Run(async () =>
@@ -255,7 +200,6 @@ public class ScanViewModel : ViewModelBase
             IsStopped = true;
             _stopwatch.Stop();
             _timer.Stop();
-            _cancellationTokenSource.Dispose();
         }
     }
 
@@ -265,7 +209,7 @@ public class ScanViewModel : ViewModelBase
         try
         {
             // only tries ARP resolution if the address is part of the computer's local subnet
-            var tryArp = _localNetworks.Any(network => network.Contains(address));
+            var tryArp = _localNetwork.Contains(address);
             if (tryArp)
             {
                 if (await Arp.ArpScanAsync(address, 1000, token)) await AddHostAsync(address, token);

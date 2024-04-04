@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LocationsWithSilentDeleteHolder">
+    <option name="locations">
+      <list>
+        <option value="$PROJECT_DIR$/NetworkToolkitModern.App/bin/Release/net7.0/win-x64/publish" />
+        <option value="$PROJECT_DIR$/NetworkToolkitModern.App/bin/Release/net7.0/win-x64/publish/Zip" />
+        <option value="$PROJECT_DIR$/NetworkToolkitModern.App/bin/Release/net7.0/win-x64/publish/v0.1.0" />
+        <option value="$PROJECT_DIR$/NetworkToolkitModern.App/bin/Release/net7.0/win-x64/publish/v0.1.1" />
+        <option value="$PROJECT_DIR$/NetworkToolkitModern.App/bin/Release/net7.0/win-x64/publish/v0.1.2" />
+      </list>
+    </option>
+  </component>
+</project>

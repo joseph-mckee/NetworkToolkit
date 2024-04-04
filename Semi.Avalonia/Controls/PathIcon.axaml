@@ -1,0 +1,26 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:CompileBindings="True">
+    <ControlTheme x:Key="{x:Type PathIcon}" TargetType="PathIcon">
+        <Setter Property="PathIcon.Background" Value="Transparent" />
+        <Setter Property="PathIcon.Height" Value="{DynamicResource IconElementThemeHeight}" />
+        <Setter Property="PathIcon.Width" Value="{DynamicResource IconElementThemeWidth}" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="PathIcon">
+                <Border Background="{TemplateBinding Background}">
+                    <Viewbox Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <Path
+                            Name="PART_Path"
+                            Data="{TemplateBinding Data}"
+                            Fill="{TemplateBinding Foreground}"
+                            Stretch="Uniform" />
+                    </Viewbox>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^.Active /template/ Path#PART_Path">
+            <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=BorderBrush}"></Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

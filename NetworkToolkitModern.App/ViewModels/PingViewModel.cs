@@ -20,7 +20,7 @@ public class PingViewModel : ViewModelBase
     private string _attempts = "4";
     private string _buffer = "32";
     private CancellationTokenSource? _cancellationTokenSource;
-    private string _delay = "500";
+    private string _delay = "200";
     private int _failedPings;
     private bool _fragmentable;
     private string _hops = "30";
@@ -32,7 +32,7 @@ public class PingViewModel : ViewModelBase
     private bool _isStopped;
     private ObservableCollection<InterfaceModel> _networkInterfaces = new();
     private string _packetLoss = "0%";
-    private ObservableCollection<PingReplyModel> _pingReplies;
+    private ObservableCollection<PingReplyModel>? _pingReplies;
     private int _progress;
 
     private ulong _replyTimes;
@@ -44,33 +44,14 @@ public class PingViewModel : ViewModelBase
 
     public PingViewModel()
     {
-        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-        foreach (var networkInterface in networkInterfaces)
-        {
-            try
-            {
-                networkInterface.GetIPProperties().GetIPv4Properties();
-            }
-            catch
-            {
-                continue;
-            }
+        Reset();
+    }
 
-            if (networkInterface.OperationalStatus == OperationalStatus.Up)
-                _networkInterfaces.Add(new InterfaceModel
-                {
-                    Name = networkInterface.Name,
-                    Description = networkInterface.Description,
-                    IpAddress = networkInterface.GetIPProperties().UnicastAddresses
-                        .FirstOrDefault(ip => ip.Address.GetAddressBytes().Length == 4)
-                        ?.Address.ToString(),
-                    Index = networkInterface.GetIPProperties().GetIPv4Properties().Index
-                });
-        }
+    public event EventHandler? ScrollToNewItemRequested;
 
-        SelectedIndex = 0;
-        IsStopped = true;
-        _pingReplies = new ObservableCollection<PingReplyModel>();
+    protected virtual void OnScrollToNewItemRequested()
+    {
+        ScrollToNewItemRequested?.Invoke(this, EventArgs.Empty);
     }
 
     public async Task StartPing()
@@ -158,7 +139,8 @@ public class PingViewModel : ViewModelBase
             {
                 if (reply.Status == IPStatus.Success) SuccessfulPings++;
                 else FailedPings++;
-                PingReplies.Add(new PingReplyModel(reply, index + 1));
+                PingReplies?.Add(new PingReplyModel(reply, index + 1));
+                OnScrollToNewItemRequested();
                 ReplyTimes += reply.RoundTripTime;
                 Progress++;
             });
@@ -225,6 +207,35 @@ public class PingViewModel : ViewModelBase
     public void Reset()
     {
         StopPinging();
+        var selected = SelectedIndex;
+        NetworkInterfaces.Clear();
+        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+        foreach (var networkInterface in networkInterfaces)
+        {
+            try
+            {
+                networkInterface.GetIPProperties().GetIPv4Properties();
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (networkInterface.OperationalStatus == OperationalStatus.Up)
+                NetworkInterfaces.Add(new InterfaceModel
+                {
+                    Name = networkInterface.Name,
+                    Description = networkInterface.Description,
+                    IpAddress = networkInterface.GetIPProperties().UnicastAddresses
+                        .FirstOrDefault(ip => ip.Address.GetAddressBytes().Length == 4)
+                        ?.Address.ToString(),
+                    Index = networkInterface.GetIPProperties().GetIPv4Properties().Index
+                });
+        }
+
+        SelectedIndex = selected;
+        IsStopped = true;
+        PingReplies = new ObservableCollection<PingReplyModel>();
         SuccessfulPings = 0;
         FailedPings = 0;
         PacketLoss = "0%";
@@ -297,11 +308,16 @@ public class PingViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _progress, value);
     }
 
-    public ObservableCollection<PingReplyModel> PingReplies
+    public ObservableCollection<PingReplyModel>? PingReplies
     {
         get => _pingReplies;
-        set => this.RaiseAndSetIfChanged(ref _pingReplies, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _pingReplies, value);
+            this.RaisePropertyChanged();
+        }
     }
+
 
     public ObservableCollection<InterfaceModel> NetworkInterfaces
     {

@@ -1,19 +1,23 @@
-﻿using Avalonia.Controls;
-using Avalonia.Interactivity;
+﻿using System;
+using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using NetworkToolkitModern.App.ViewModels;
+using ReactiveUI;
 
 namespace NetworkToolkitModern.App.Views;
 
 public partial class PingView : ReactiveUserControl<PingViewModel>
 {
-    private readonly ScrollViewer? _replyScrollViewer;
+    private readonly DataGrid? _dataGrid;
 
     public PingView()
     {
         InitializeComponent();
-        _replyScrollViewer = this.FindControl<ScrollViewer>("ReplyScrollViewer");
+        _dataGrid = this.FindControl<DataGrid>("ReplyGrid");
+        this.WhenActivated(disposables => { });
+        DataContextChanged += PingView_DataContextChanged;
     }
 
     private void InitializeComponent()
@@ -21,8 +25,15 @@ public partial class PingView : ReactiveUserControl<PingViewModel>
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void Control_OnLoaded(object? sender, RoutedEventArgs e)
+    private void PingView_DataContextChanged(object? sender, EventArgs e)
     {
-        _replyScrollViewer?.ScrollToEnd();
+        if (DataContext is PingViewModel viewModel)
+            viewModel.ScrollToNewItemRequested += ViewModel_ScrollToNewItemRequested;
+    }
+
+    private void ViewModel_ScrollToNewItemRequested(object? sender, EventArgs e)
+    {
+        if (DataContext is PingViewModel { PingReplies.Count: > 0 } viewModel)
+            _dataGrid?.ScrollIntoView(viewModel.PingReplies.Last(), null);
     }
 }
