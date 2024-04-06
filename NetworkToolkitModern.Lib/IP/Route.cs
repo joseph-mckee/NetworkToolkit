@@ -11,14 +11,26 @@ public static class Route
     public static NetworkInterface GetBestInterface()
     {
         var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().ToList();
-        return networkInterfaces.First(x =>
-            x.GetIPProperties().GetIPv4Properties().Index == GetRoutes().OrderBy(y => y.Metric1).First().IfIndex);
+            return networkInterfaces.First(x =>
+                x.GetIPProperties().GetIPv4Properties().Index == GetRoutes().OrderBy(y => y.Metric1).First().IfIndex);
     }
 
     public static int GetMetric(NetworkInterface networkInterface)
     {
-        return GetRoutes().Where(row => row.IfIndex == networkInterface.GetIPProperties().GetIPv4Properties().Index)
-            .OrderBy(x => x.Metric1).First().Metric1;
+        try
+        {
+            return GetRoutes().Where(row => row.IfIndex == networkInterface.GetIPProperties().GetIPv4Properties().Index)
+                .OrderBy(x => x.Metric1).First().Metric1;
+        }
+        // catch (NetworkInformationException)
+        // {
+        //     return GetRoutes().Where(row => row.IfIndex == networkInterface.GetIPProperties().GetIPv6Properties().Index)
+        //         .OrderBy(x => x.Metric1).First().Metric1;
+        // }
+        catch (Exception)
+        {
+            return 100000;
+        }
     }
 
     public static List<RouteTableRow> GetRoutes()

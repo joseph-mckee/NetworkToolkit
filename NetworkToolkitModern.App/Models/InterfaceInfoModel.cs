@@ -15,6 +15,7 @@ public class InterfaceInfoModel
 {
     public InterfaceInfoModel(NetworkInterface netInt)
     {
+        Metric = Route.GetMetric(netInt);
         Name = netInt.Name; // 
         Type = netInt.NetworkInterfaceType.ToString(); // 
         Description = netInt.Description; // 
@@ -120,6 +121,8 @@ public class InterfaceInfoModel
     public string BytesReceived { get; set; }
 
     public string? SubnetMask { get; set; }
+
+    public int Metric { get; set; }
 
     public bool IsAutomaticPrivateAddressingEnabled { get; set; }
 

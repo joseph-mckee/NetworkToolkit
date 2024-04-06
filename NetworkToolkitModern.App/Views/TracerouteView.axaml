@@ -11,6 +11,7 @@
         <vm:TracerouteViewModel />
     </Design.DataContext>
     <UserControl.Styles>
+        <StyleInclude Source="../Styles/CustomSyles.axaml" />
         <Style Selector="TextBlock.label">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -23,8 +24,7 @@
         </Style>
     </UserControl.Styles>
     <Grid Margin="10" ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
-        <Border Grid.RowSpan="2" BoxShadow="0 0 10 0 Indigo" CornerRadius="5" BorderBrush="Indigo"
-                BorderThickness="1" Padding="20">
+        <Border Grid.RowSpan="2" Classes="frame" Padding="20">
             <Grid MaxWidth="800" ClipToBounds="True" ColumnDefinitions="*,*"
                   RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
                   HorizontalAlignment="Left">
@@ -75,9 +75,7 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Border Margin="10,0,0,0" Grid.Row="0" BorderBrush="Indigo" BoxShadow="0 0 10 0 Indigo" CornerRadius="5"
-                BorderThickness="1"
-                Grid.Column="1">
+        <Border Grid.Row="0" Grid.Column="1" Classes="frame" Margin="10,0,0,0">
             <DataGrid HorizontalAlignment="Stretch" IsReadOnly="True" CanUserSortColumns="False"
                       CanUserResizeColumns="True" GridLinesVisibility="Horizontal"
                       ItemsSource="{Binding TracerouteReplyModels}">

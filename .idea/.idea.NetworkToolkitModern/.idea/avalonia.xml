@@ -4,6 +4,8 @@
     <option name="projectPerEditor">
       <map>
         <entry key="NetworkToolkitModern.App/App.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Styles/CustomSyles.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Styles/ThemeOverride.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/ArpView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/IpConfigView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/MainWindow.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />

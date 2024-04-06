@@ -267,17 +267,9 @@ public class TracerouteViewModel : ViewModelBase
             }
 
             if (networkInterface.OperationalStatus == OperationalStatus.Up)
-                NetworkInterfaces.Add(new InterfaceModel
-                {
-                    Name = networkInterface.Name,
-                    Description = networkInterface.Description,
-                    IpAddress = networkInterface.GetIPProperties().UnicastAddresses
-                        .FirstOrDefault(ip => ip.Address.GetAddressBytes().Length == 4)
-                        ?.Address.ToString(),
-                    Index = networkInterface.GetIPProperties().GetIPv4Properties().Index
-                });
+                NetworkInterfaces.Add(new InterfaceModel(networkInterface));
         }
-
+        NetworkInterfaces = new ObservableCollection<InterfaceModel>(NetworkInterfaces.OrderBy(o => o.Metric));
         SelectedIndex = selected;
         TracerouteReplyModels = new ObservableCollection<TracerouteReplyModel>();
     }

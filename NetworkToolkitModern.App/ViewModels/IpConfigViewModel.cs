@@ -6,7 +6,9 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
+using DynamicData;
 using NetworkToolkitModern.App.Models;
+using NetworkToolkitModern.Lib.IP;
 using ReactiveUI;
 
 namespace NetworkToolkitModern.App.ViewModels;
@@ -17,7 +19,6 @@ public class IpConfigViewModel : ViewModelBase
     private ObservableCollection<InterfaceInfoModel> _interfaceInfoModels = new();
     private ObservableCollection<InterfaceModel> _interfaceModels = new();
     private bool _isFocused;
-    private NetworkInterface[] _networkInterfaces = Array.Empty<NetworkInterface>();
     private int _selectedInterface;
 
     public IpConfigViewModel()
@@ -70,7 +71,7 @@ public class IpConfigViewModel : ViewModelBase
             {
                 // if (!IsFocused) continue;
                 Update();
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
             }
         }
         catch (Exception e)
@@ -82,35 +83,31 @@ public class IpConfigViewModel : ViewModelBase
 
     private void Update()
     {
-        List<InterfaceModel> interfaceModelsList = new();
-        List<InterfaceInfoModel> interfaceInfoModels = new();
-        if (_networkInterfaces.Length != NetworkInterface.GetAllNetworkInterfaces().Length)
+        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().OrderBy(o => o.GetIPStatistics().BytesReceived).Reverse().ToList();
+        
+        if (InterfaceModels.Count < networkInterfaces.Count)
         {
-            _networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-            interfaceModelsList.AddRange(_networkInterfaces.Select(networkInterface => new InterfaceModel
+            foreach (var networkInterface in networkInterfaces)
             {
-                Name = networkInterface.Name,
-                Index = networkInterface.GetIPProperties().GetIPv6Properties().Index
-            }));
-            InterfaceModels = new ObservableCollection<InterfaceModel>(interfaceModelsList.OrderBy(o => o.Index));
-            interfaceModelsList.Clear();
+                if (InterfaceModels.Any(x => x.Description == networkInterface.Description)) continue;
+                InterfaceModels.Add(new InterfaceModel(networkInterface));
+                InterfaceInfoModels.Add(new InterfaceInfoModel(networkInterface));
+            }
         }
 
-        _networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-        interfaceInfoModels.AddRange(_networkInterfaces.Select(networkInterface =>
-            new InterfaceInfoModel(networkInterface)));
-        InterfaceInfoModels = new ObservableCollection<InterfaceInfoModel>(interfaceInfoModels.OrderBy(o => o.Index));
-        try
+        if (InterfaceModels.Count > networkInterfaces.Count)
         {
-            CurrentEntry = InterfaceInfoModels[SelectedInterface];
-        }
-        catch
-        {
-            SelectedInterface = 0;
-            CurrentEntry = InterfaceInfoModels[SelectedInterface];
+            if (SelectedInterface > networkInterfaces.Count) SelectedInterface = 0;
+            InterfaceModels.Remove(InterfaceModels.Where(x =>
+                !networkInterfaces.Select(networkInterface => new InterfaceModel(networkInterface)).ToList()
+                    .Select(y => y.Description).ToList().Contains(x.Description)).ToList());
+            InterfaceInfoModels.Remove(InterfaceInfoModels.Where(x =>
+                !networkInterfaces.Select(networkInterface => new InterfaceInfoModel(networkInterface)).ToList()
+                    .Select(y => y.Description).ToList().Contains(x.Description)).ToList());
+            SelectedInterface = InterfaceModels.IndexOf(
+                InterfaceModels.FirstOrDefault(x => x.Description == CurrentEntry.Description) ?? InterfaceModels[0]);
         }
 
-        interfaceInfoModels.Clear();
-        GC.Collect();
+        CurrentEntry = new InterfaceInfoModel(networkInterfaces.First(x => x.Description == CurrentEntry.Description));
     }
 }
