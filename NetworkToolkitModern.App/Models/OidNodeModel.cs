@@ -4,10 +4,6 @@ namespace NetworkToolkitModern.App.Models;
 
 public class OidNodeModel
 {
-    public ObservableCollection<OidNodeModel>? Children { get; }
-    public string Name { get; }
-    public string Oid { get; }
-
     public OidNodeModel(string name, string oid)
     {
         Name = name;
@@ -20,4 +16,8 @@ public class OidNodeModel
         Oid = oid;
         Children = children;
     }
+
+    public ObservableCollection<OidNodeModel>? Children { get; }
+    public string Name { get; }
+    public string Oid { get; }
 }

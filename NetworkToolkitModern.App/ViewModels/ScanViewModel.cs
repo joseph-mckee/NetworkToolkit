@@ -10,35 +10,32 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NetworkToolkitModern.App.Models;
 using NetworkToolkitModern.Lib.Arp;
 using NetworkToolkitModern.Lib.IP;
 using NetworkToolkitModern.Lib.Ping;
 using NetworkToolkitModern.Lib.Tcp;
 using NetworkToolkitModern.Lib.Vendor;
-using ReactiveUI;
 
 namespace NetworkToolkitModern.App.ViewModels;
 
-public class ScanViewModel : ViewModelBase
+public partial class ScanViewModel : ViewModelBase
 {
     private readonly List<IPAddress> _localNetwork;
     private readonly Stopwatch _stopwatch = new();
     private readonly DispatcherTimer _timer = new();
     private readonly VendorLookup _vendorLookup = new();
-
     private CancellationTokenSource? _cancellationTokenSource;
-    private string _elapsed = "00:00:00";
-
-    private int _goal;
-    private bool _isScanning;
-    private bool _isStopped = true;
-    private int _progress;
-    private string _progressText = "Scanned: 0/0";
-    private string _rangeInput = "192.168.1.1-192.168.1.254";
-
-    private ObservableCollection<ScannedHostModel> _scannedHosts = new();
-    private int _timeout;
+    [ObservableProperty] private string _elapsed = "00:00:00";
+    [ObservableProperty] private int _goal;
+    [ObservableProperty] private bool _isScanning;
+    [ObservableProperty] private bool _isStopped = true;
+    [ObservableProperty] private int _progress;
+    [ObservableProperty] private string _progressText = "Scanned: 0/0";
+    [ObservableProperty] private string _rangeInput = "192.168.1.1-192.168.1.254";
+    [ObservableProperty] private ObservableCollection<ScannedHostModel> _scannedHosts = new();
+    [ObservableProperty] private int _timeout;
 
     public ScanViewModel()
     {
@@ -57,61 +54,6 @@ public class ScanViewModel : ViewModelBase
         RangeInput = $"{startAddress}-{endAddress}";
         var netInfo = new NetInfo(localIp, localSubnet);
         _localNetwork = netInfo.GetAddressRangeFromNetwork().ToList();
-    }
-
-
-    public bool IsScanning
-    {
-        get => _isScanning;
-        set => this.RaiseAndSetIfChanged(ref _isScanning, value);
-    }
-
-    public string ProgressText
-    {
-        get => _progressText;
-        set => this.RaiseAndSetIfChanged(ref _progressText, value);
-    }
-
-    public int Goal
-    {
-        get => _goal;
-        set => this.RaiseAndSetIfChanged(ref _goal, value);
-    }
-
-    public int Progress
-    {
-        get => _progress;
-        set => this.RaiseAndSetIfChanged(ref _progress, value);
-    }
-
-    public string RangeInput
-    {
-        get => _rangeInput;
-        set => this.RaiseAndSetIfChanged(ref _rangeInput, value);
-    }
-
-    public ObservableCollection<ScannedHostModel> ScannedHosts
-    {
-        get => _scannedHosts;
-        set => this.RaiseAndSetIfChanged(ref _scannedHosts, value);
-    }
-
-    public int Timeout
-    {
-        get => _timeout;
-        set => this.RaiseAndSetIfChanged(ref _timeout, value);
-    }
-
-    public string Elapsed
-    {
-        get => _elapsed;
-        set => this.RaiseAndSetIfChanged(ref _elapsed, value);
-    }
-
-    public bool IsStopped
-    {
-        get => _isStopped;
-        set => this.RaiseAndSetIfChanged(ref _isStopped, value);
     }
 
     public void Reset()

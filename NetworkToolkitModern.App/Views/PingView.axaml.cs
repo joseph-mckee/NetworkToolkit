@@ -2,13 +2,11 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using NetworkToolkitModern.App.ViewModels;
-using ReactiveUI;
 
 namespace NetworkToolkitModern.App.Views;
 
-public partial class PingView : ReactiveUserControl<PingViewModel>
+public partial class PingView : UserControl
 {
     private readonly DataGrid? _dataGrid;
 
@@ -16,7 +14,6 @@ public partial class PingView : ReactiveUserControl<PingViewModel>
     {
         InitializeComponent();
         _dataGrid = this.FindControl<DataGrid>("ReplyGrid");
-        this.WhenActivated(disposables => { });
         DataContextChanged += PingView_DataContextChanged;
     }
 

@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ReactiveUI;
 
 namespace NetworkToolkitModern.App.ViewModels;
 
-public partial class MainWindowViewModel : ObservableObject
+public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty] private string _publicIpAddress = string.Empty;
-    [ObservableProperty] private string _connectionStatus = string.Empty;
     private static readonly HttpClient Client = new();
     private static readonly Ping Ping = new();
+    [ObservableProperty] private string _connectionStatus = string.Empty;
+    [ObservableProperty] private string _publicIpAddress = string.Empty;
+    private Timer _refreshTimer;
 
     public MainWindowViewModel(ScanViewModel scanViewModel, PingViewModel pingViewModel,
         TracerouteViewModel tracerouteViewModel, IpConfigViewModel ipConfigViewModel, SnmpViewModel snmpViewModel)
@@ -25,24 +24,7 @@ public partial class MainWindowViewModel : ObservableObject
         TracerouteViewModel = tracerouteViewModel;
         IpConfigViewModel = ipConfigViewModel;
         SnmpViewModel = snmpViewModel;
-        Task.Run(StatusLoop);
-    }
-
-    private void StatusLoop()
-    {
-        try
-        {
-            while (true)
-            {
-                RefreshStatus();
-                Thread.Sleep(5000);
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            throw;
-        }
+        _refreshTimer = new Timer(StatusLoop, null, 0, 2000);
     }
 
 
@@ -53,6 +35,18 @@ public partial class MainWindowViewModel : ObservableObject
         TracerouteViewModel = new TracerouteViewModel();
         IpConfigViewModel = new IpConfigViewModel();
         SnmpViewModel = new SnmpViewModel();
+        _refreshTimer = new Timer(StatusLoop, null, 0, 2000);
+    }
+
+    public PingViewModel PingViewModel { get; set; }
+    public TracerouteViewModel TracerouteViewModel { get; set; }
+    public ScanViewModel ScanViewModel { get; set; }
+    public IpConfigViewModel IpConfigViewModel { get; set; }
+    public SnmpViewModel SnmpViewModel { get; set; }
+
+    private void StatusLoop(object? state)
+    {
+        Task.Run(RefreshStatus);
     }
 
     private async void RefreshStatus()
@@ -84,10 +78,4 @@ public partial class MainWindowViewModel : ObservableObject
             return null;
         }
     }
-
-    public PingViewModel PingViewModel { get; set; }
-    public TracerouteViewModel TracerouteViewModel { get; set; }
-    public ScanViewModel ScanViewModel { get; set; }
-    public IpConfigViewModel IpConfigViewModel { get; set; }
-    public SnmpViewModel SnmpViewModel { get; set; }
 }

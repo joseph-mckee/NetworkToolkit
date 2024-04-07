@@ -13,6 +13,7 @@
         <entry key="NetworkToolkitModern.App/Views/PingView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/ScanView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/SnmpView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/Test.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/TraceRouteView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/TracerouteView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="Semi.Avalonia/Themes/Index.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />

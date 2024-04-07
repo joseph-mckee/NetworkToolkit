@@ -3,6 +3,26 @@
     <Styles.Resources>
         <ResourceDictionary>
             <SolidColorBrush x:Key="TabItemLinePipeSelectedBackground" Color="MediumPurple" />
+            <SolidColorBrush x:Key="ComboBoxSelectorPressedBorderBrush" Color="MediumPurple" />
+            <SolidColorBrush x:Key="ComboBoxItemSelectedBackground" Opacity="0.2" Color="MediumPurple" />
+            <SolidColorBrush x:Key="ComboBoxItemSelectedPointeroverBackground" Opacity="0.3" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxPressedBackground" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedDefaultBackground" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedDefaultBorderBrush" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedPointeroverBackground" Opacity=".8" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedPointeroverBorderBrush" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxPointeroverBorderBrush" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedPressedBackground" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedPressedBorderBrush" Color="MediumPurple" />
+            <SolidColorBrush x:Key="CheckBoxCheckedDisabledBackground" Color="#1d13b8" />
+            <SolidColorBrush x:Key="CheckBoxCardCheckedBackground" Opacity="0.2" Color="#FF5554ff" />
+            <SolidColorBrush x:Key="CheckBoxCardCheckedBorderBrush" Color="#FF5554ff" />
+            <SolidColorBrush x:Key="CheckBoxCardCheckedDisabledBorderBrush" Color="#FF1d13b8" />
+            <SolidColorBrush x:Key="CheckBoxCardCheckedPointeroverBorderBrush" Color="#FF7f81ff" />
+            <SolidColorBrush x:Key="CheckBoxCardCheckedPressedBorderBrush" Color="#FFa9acff" />
+            <SolidColorBrush x:Key="DataGridRowSelectedBackground" Opacity="0.2" Color="MediumPurple" />
+            <SolidColorBrush x:Key="DataGridRowSelectedPointeroverBackground" Opacity="0.3" Color="MediumPurple" />
         </ResourceDictionary>
     </Styles.Resources>
     <Style Selector="Border.frame">
@@ -19,6 +39,10 @@
     </Style>
     <Style Selector="TextBlock">
         <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="SelectableTextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
     </Style>
     <Style Selector="TextBox">
         <Setter Property="Foreground" Value="White" />

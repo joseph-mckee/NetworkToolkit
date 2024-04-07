@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.NetworkInformation;
 using NetworkToolkitModern.Lib.IP;
 
@@ -7,7 +6,6 @@ namespace NetworkToolkitModern.App.Models;
 
 public class InterfaceModel
 {
-
     public InterfaceModel(NetworkInterface netInt)
     {
         Name = netInt.Name;
@@ -23,8 +21,10 @@ public class InterfaceModel
         {
             Index = netInt.GetIPProperties().GetIPv6Properties().Index;
         }
+
         Metric = Route.GetMetric(netInt);
     }
+
     public string? Name { get; init; }
     public string? Description { get; init; }
     public string? IpAddress { get; init; }

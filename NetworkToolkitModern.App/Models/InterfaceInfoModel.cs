@@ -85,8 +85,11 @@ public class InterfaceInfoModel
 
         var routes = Route.GetRoutes();
         var relevantRoutes = routes.Where(x => x.IfIndex == Index).ToList();
+        if (relevantRoutes.Any()) IsRoute = true;
         foreach (var route in relevantRoutes) RouteRowModels.Add(new RouteRowModel(route));
     }
+
+    public bool IsRoute { get; set; }
 
     public bool IsArp { get; set; }
 

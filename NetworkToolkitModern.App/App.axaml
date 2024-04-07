@@ -8,7 +8,7 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-    
+
 
     <Application.Styles>
         <StyleInclude Source="avares://Semi.Avalonia/Themes/Index.axaml" />

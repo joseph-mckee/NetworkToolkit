@@ -3,32 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\views\\mainwindow.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\views\\mainwindow.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\viewlocator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\viewlocator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\app.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\app.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\views\\mainwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\views\\mainwindow.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\viewmodels\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\viewmodels\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\views\\scanview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\views\\scanview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\views\\pingview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
-      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\views\\pingview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+      "AbsoluteMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|c:\\users\\joseph\\onedrive - default directory\\documents\\source\\repos\\networktoolkitmodern\\networktoolkitmodern.app\\app.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{E5E168D8-8301-4DDB-A28E-A4BEC7DAECAF}|NetworkToolkitModern.App\\NetworkToolkitModern.App.csproj|solutionrelative:networktoolkitmodern.app\\app.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,94 +22,44 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MainWindow.axaml.cs",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\MainWindow.axaml.cs",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\Views\\MainWindow.axaml.cs",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\MainWindow.axaml.cs",
-              "RelativeToolTip": "NetworkToolkitModern.App\\Views\\MainWindow.axaml.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T00:54:39.619Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MainWindowViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\ViewModels\\MainWindowViewModel.cs",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\ViewModels\\MainWindowViewModel.cs",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\ViewModels\\MainWindowViewModel.cs",
-              "RelativeToolTip": "NetworkToolkitModern.App\\ViewModels\\MainWindowViewModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T00:54:19.621Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Program.cs",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\Program.cs",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Program.cs",
-              "RelativeToolTip": "NetworkToolkitModern.App\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T00:52:31.683Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "App.axaml.cs",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\App.axaml.cs",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\App.axaml.cs",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\App.axaml.cs",
-              "RelativeToolTip": "NetworkToolkitModern.App\\App.axaml.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAABcAAAAAAAAA",
+              "Title": "ViewModelBase.cs",
+              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\ViewModels\\ViewModelBase.cs",
+              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\ViewModels\\ViewModelBase.cs",
+              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\ViewModels\\ViewModelBase.cs",
+              "RelativeToolTip": "NetworkToolkitModern.App\\ViewModels\\ViewModelBase.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T00:52:12.155Z",
+              "WhenOpened": "2024-04-07T00:52:55.17Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MainWindow.axaml",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\MainWindow.axaml",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\Views\\MainWindow.axaml",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\MainWindow.axaml",
-              "RelativeToolTip": "NetworkToolkitModern.App\\Views\\MainWindow.axaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-03-25T00:51:04.064Z",
+              "Title": "ViewLocator.cs",
+              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\ViewLocator.cs",
+              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\ViewLocator.cs",
+              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\ViewLocator.cs",
+              "RelativeToolTip": "NetworkToolkitModern.App\\ViewLocator.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-07T00:51:35.271Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ScanView.axaml",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\ScanView.axaml",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\Views\\ScanView.axaml",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\ScanView.axaml",
-              "RelativeToolTip": "NetworkToolkitModern.App\\Views\\ScanView.axaml",
+              "DocumentIndex": 2,
+              "Title": "App.axaml",
+              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\App.axaml",
+              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\App.axaml",
+              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\App.axaml",
+              "RelativeToolTip": "NetworkToolkitModern.App\\App.axaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-03-25T00:51:00.385Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PingView.axaml",
-              "DocumentMoniker": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\PingView.axaml",
-              "RelativeDocumentMoniker": "NetworkToolkitModern.App\\Views\\PingView.axaml",
-              "ToolTip": "C:\\Users\\joseph\\OneDrive - Default Directory\\Documents\\source\\repos\\NetworkToolkitModern\\NetworkToolkitModern.App\\Views\\PingView.axaml",
-              "RelativeToolTip": "NetworkToolkitModern.App\\Views\\PingView.axaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-03-25T00:50:13.237Z",
+              "WhenOpened": "2024-04-07T00:51:22.64Z",
               "EditorCaption": ""
             }
           ]

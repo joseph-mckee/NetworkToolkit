@@ -8,98 +8,37 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NetworkToolkitModern.App.Models;
 using NetworkToolkitModern.Lib.Ping;
-using ReactiveUI;
 
 namespace NetworkToolkitModern.App.ViewModels;
 
-public class TracerouteViewModel : ViewModelBase
+public partial class TracerouteViewModel : ViewModelBase
 {
     private CancellationTokenSource? _cancellationTokenSource;
-    private string _delay = "200";
-    private bool _doResolve;
-    private string _hops = "30";
-    private string _host = "8.8.8.8";
-    private bool _isStarted;
-    private bool _isStopped = true;
-    private ObservableCollection<InterfaceModel> _networkInterfaces = new();
-    private int _selectedIndex;
-    private InterfaceModel? _selectedInterface;
-    private string _timeout = "1000";
+    [ObservableProperty] private string _delay = "200";
+    [ObservableProperty] private bool _doResolve;
+    [ObservableProperty] private string _hops = "30";
+    [ObservableProperty] private string _host = "8.8.8.8";
+    [ObservableProperty] private bool _isStarted;
+    [ObservableProperty] private bool _isStopped = true;
+    [ObservableProperty] private ObservableCollection<InterfaceModel> _networkInterfaces = new();
+    [ObservableProperty] private int _selectedIndex;
+    [ObservableProperty] private InterfaceModel? _selectedInterface;
+    [ObservableProperty] private string _timeout = "1000";
 
-    private ObservableCollection<TracerouteReplyModel>? _tracerouteReplyModels;
+    [ObservableProperty] private ObservableCollection<TracerouteReplyModel>? _tracerouteReplyModels;
 
     public TracerouteViewModel()
     {
         Reset();
     }
 
-    public bool IsStarted
+    partial void OnSelectedIndexChanged(int value)
     {
-        get => _isStarted;
-        set => this.RaiseAndSetIfChanged(ref _isStarted, value);
-    }
-
-    public bool IsStopped
-    {
-        get => _isStopped;
-        set => this.RaiseAndSetIfChanged(ref _isStopped, value);
-    }
-
-    public ObservableCollection<TracerouteReplyModel>? TracerouteReplyModels
-    {
-        get => _tracerouteReplyModels;
-        set => this.RaiseAndSetIfChanged(ref _tracerouteReplyModels, value);
-    }
-
-    public string Host
-    {
-        get => _host;
-        set => this.RaiseAndSetIfChanged(ref _host, value);
-    }
-
-    public string Hops
-    {
-        get => _hops;
-        set => this.RaiseAndSetIfChanged(ref _hops, value);
-    }
-
-    public string Timeout
-    {
-        get => _timeout;
-        set => this.RaiseAndSetIfChanged(ref _timeout, value);
-    }
-
-    public string Delay
-    {
-        get => _delay;
-        set => this.RaiseAndSetIfChanged(ref _delay, value);
-    }
-
-    public bool DoResolve
-    {
-        get => _doResolve;
-        set => this.RaiseAndSetIfChanged(ref _doResolve, value);
-    }
-
-    private InterfaceModel? SelectedInterface => _selectedInterface;
-
-    public ObservableCollection<InterfaceModel> NetworkInterfaces
-    {
-        get => _networkInterfaces;
-        set => this.RaiseAndSetIfChanged(ref _networkInterfaces, value);
-    }
-
-    public int SelectedIndex
-    {
-        get => _selectedIndex;
-        set
-        {
-            if (value < 0) return;
-            this.RaiseAndSetIfChanged(ref _selectedInterface, NetworkInterfaces[value]);
-            this.RaiseAndSetIfChanged(ref _selectedIndex, value);
-        }
+        if (value < 0) return;
+        SelectedInterface = NetworkInterfaces[value];
     }
 
     private async void ResolveDnsInBackground(int index, CancellationToken token)
@@ -269,6 +208,7 @@ public class TracerouteViewModel : ViewModelBase
             if (networkInterface.OperationalStatus == OperationalStatus.Up)
                 NetworkInterfaces.Add(new InterfaceModel(networkInterface));
         }
+
         NetworkInterfaces = new ObservableCollection<InterfaceModel>(NetworkInterfaces.OrderBy(o => o.Metric));
         SelectedIndex = selected;
         TracerouteReplyModels = new ObservableCollection<TracerouteReplyModel>();

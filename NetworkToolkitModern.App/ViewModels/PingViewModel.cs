@@ -7,40 +7,40 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using NetworkToolkitModern.App.Models;
 using NetworkToolkitModern.Lib.Ping;
-using ReactiveUI;
 
 namespace NetworkToolkitModern.App.ViewModels;
 
-public class PingViewModel : ViewModelBase
+public partial class PingViewModel : ViewModelBase
 {
-    private string _attempts = "4";
-    private string _buffer = "32";
+    [ObservableProperty] private string _attempts = "4";
+    [ObservableProperty] private string _buffer = "32";
     private CancellationTokenSource? _cancellationTokenSource;
-    private string _delay = "200";
-    private int _failedPings;
-    private bool _fragmentable;
-    private string _hops = "30";
-    private string _host = "8.8.8.8";
-    private string _hostname = string.Empty;
-    private bool _isContinuous;
-    private bool _isIndeterminate;
-    private bool _isPinging;
-    private bool _isStopped;
-    private ObservableCollection<InterfaceModel> _networkInterfaces = new();
-    private string _packetLoss = "0%";
-    private ObservableCollection<PingReplyModel>? _pingReplies;
-    private int _progress;
+    [ObservableProperty] private string _delay = "200";
+    [ObservableProperty] private int _failedPings;
+    [ObservableProperty] private bool _fragmentable;
+    [ObservableProperty] private string _hops = "30";
+    [ObservableProperty] private string _host = "8.8.8.8";
+    [ObservableProperty] private string _hostname = string.Empty;
+    [ObservableProperty] private bool _isContinuous;
+    [ObservableProperty] private bool _isIndeterminate;
+    [ObservableProperty] private bool _isPinging;
+    [ObservableProperty] private bool _isStopped;
+    [ObservableProperty] private ObservableCollection<InterfaceModel> _networkInterfaces = new();
+    [ObservableProperty] private string _packetLoss = "0%";
+    [ObservableProperty] private ObservableCollection<PingReplyModel>? _pingReplies;
+    [ObservableProperty] private int _progress;
 
-    private ulong _replyTimes;
-    private string _roundTripTime = string.Empty;
-    private int _selectedIndex;
-    private InterfaceModel? _selectedInterface;
-    private int _successfulPings;
-    private string _timeout = "1000";
+    [ObservableProperty] private ulong _replyTimes;
+    [ObservableProperty] private string _roundTripTime = string.Empty;
+    [ObservableProperty] private int _selectedIndex;
+    [ObservableProperty] private InterfaceModel? _selectedInterface;
+    [ObservableProperty] private int _successfulPings;
+    [ObservableProperty] private string _timeout = "1000";
 
     public PingViewModel()
     {
@@ -241,166 +241,37 @@ public class PingViewModel : ViewModelBase
 
     #region Properties
 
-    public bool IsStopped
+    partial void OnSelectedIndexChanged(int value)
     {
-        get => _isStopped;
-        set => this.RaiseAndSetIfChanged(ref _isStopped, value);
+        if (value < 0) return;
+        SelectedInterface = NetworkInterfaces[value];
     }
 
-    public string Host
+    partial void OnSuccessfulPingsChanged(int value)
     {
-        get => _host;
-        set => this.RaiseAndSetIfChanged(ref _host, value);
+        if (SuccessfulPings <= 0 || FailedPings <= 0) return;
+        var average = (float)FailedPings / (FailedPings + SuccessfulPings) * 100;
+        PacketLoss = $"{Math.Round(average, 2)}%";
     }
 
-    public string Attempts
+    partial void OnFailedPingsChanged(int value)
     {
-        get => _attempts;
-        set => this.RaiseAndSetIfChanged(ref _attempts, value);
-    }
-
-    public string Hops
-    {
-        get => _hops;
-        set => this.RaiseAndSetIfChanged(ref _hops, value);
-    }
-
-    public string Timeout
-    {
-        get => _timeout;
-        set => this.RaiseAndSetIfChanged(ref _timeout, value);
-    }
-
-    public string Buffer
-    {
-        get => _buffer;
-        set => this.RaiseAndSetIfChanged(ref _buffer, value);
-    }
-
-    public string Delay
-    {
-        get => _delay;
-        set => this.RaiseAndSetIfChanged(ref _delay, value);
-    }
-
-    public bool Fragmentable
-    {
-        get => _fragmentable;
-        set => this.RaiseAndSetIfChanged(ref _fragmentable, value);
-    }
-
-    public bool IsIndeterminate
-    {
-        get => _isIndeterminate;
-        set => this.RaiseAndSetIfChanged(ref _isIndeterminate, value);
-    }
-
-    public int Progress
-    {
-        get => _progress;
-        set => this.RaiseAndSetIfChanged(ref _progress, value);
-    }
-
-    public ObservableCollection<PingReplyModel>? PingReplies
-    {
-        get => _pingReplies;
-        set
+        if (SuccessfulPings <= 0 && FailedPings <= 0) return;
+        if (SuccessfulPings <= 0 && FailedPings > 0)
         {
-            this.RaiseAndSetIfChanged(ref _pingReplies, value);
-            this.RaisePropertyChanged();
+            PacketLoss = "100%";
+            return;
         }
+
+        var average = (float)FailedPings / (FailedPings + SuccessfulPings) * 100;
+        PacketLoss = $"{Math.Round(average, 2)}%";
     }
 
-
-    public ObservableCollection<InterfaceModel> NetworkInterfaces
+    partial void OnReplyTimesChanged(ulong value)
     {
-        get => _networkInterfaces;
-        set => this.RaiseAndSetIfChanged(ref _networkInterfaces, value);
-    }
-
-    private InterfaceModel? SelectedInterface => _selectedInterface;
-
-    public int SelectedIndex
-    {
-        get => _selectedIndex;
-        set
-        {
-            if (value < 0) return;
-            this.RaiseAndSetIfChanged(ref _selectedInterface, NetworkInterfaces[value]);
-            this.RaiseAndSetIfChanged(ref _selectedIndex, value);
-        }
-    }
-
-    public bool IsContinuous
-    {
-        get => _isContinuous;
-        set => this.RaiseAndSetIfChanged(ref _isContinuous, value);
-    }
-
-    public bool IsPinging
-    {
-        get => _isPinging;
-        set => this.RaiseAndSetIfChanged(ref _isPinging, value);
-    }
-
-    public int SuccessfulPings
-    {
-        get => _successfulPings;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _successfulPings, value);
-            if (SuccessfulPings <= 0 || FailedPings <= 0) return;
-            var average = (float)FailedPings / (FailedPings + SuccessfulPings) * 100;
-            PacketLoss = $"{Math.Round(average, 2)}%";
-        }
-    }
-
-    public int FailedPings
-    {
-        get => _failedPings;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _failedPings, value);
-            if (SuccessfulPings <= 0 && FailedPings <= 0) return;
-            if (SuccessfulPings <= 0 && FailedPings > 0)
-            {
-                PacketLoss = "100%";
-                return;
-            }
-
-            var average = (float)FailedPings / (FailedPings + SuccessfulPings) * 100;
-            PacketLoss = $"{Math.Round(average, 2)}%";
-        }
-    }
-
-    public string PacketLoss
-    {
-        get => _packetLoss;
-        set => this.RaiseAndSetIfChanged(ref _packetLoss, value);
-    }
-
-    private ulong ReplyTimes
-    {
-        get => _replyTimes;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _replyTimes, value);
-            if (ReplyTimes <= 0 || SuccessfulPings <= 0) return;
-            var average = (float)ReplyTimes / SuccessfulPings;
-            RoundTripTime = $"{Math.Round(average, 2)} ms";
-        }
-    }
-
-    public string RoundTripTime
-    {
-        get => _roundTripTime;
-        set => this.RaiseAndSetIfChanged(ref _roundTripTime, value);
-    }
-
-    public string Hostname
-    {
-        get => _hostname;
-        set => this.RaiseAndSetIfChanged(ref _hostname, value);
+        if (ReplyTimes <= 0 || SuccessfulPings <= 0) return;
+        var average = (float)ReplyTimes / SuccessfulPings;
+        RoundTripTime = $"{Math.Round(average, 2)} ms";
     }
 
     #endregion

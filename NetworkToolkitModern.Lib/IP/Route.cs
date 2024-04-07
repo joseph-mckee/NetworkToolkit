@@ -11,8 +11,8 @@ public static class Route
     public static NetworkInterface GetBestInterface()
     {
         var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().ToList();
-            return networkInterfaces.First(x =>
-                x.GetIPProperties().GetIPv4Properties().Index == GetRoutes().OrderBy(y => y.Metric1).First().IfIndex);
+        return networkInterfaces.First(x =>
+            x.GetIPProperties().GetIPv4Properties().Index == GetRoutes().OrderBy(y => y.Metric1).First().IfIndex);
     }
 
     public static int GetMetric(NetworkInterface networkInterface)

@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:NetworkToolkitModern.App.ViewModels"
-             xmlns:m="clr-namespace:NetworkToolkitModern.App.Models"
              x:DataType="vm:TracerouteViewModel"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
              x:Class="NetworkToolkitModern.App.Views.TracerouteView">
@@ -88,7 +87,7 @@
                     </Style>
                 </DataGrid.Styles>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width=".5*" Binding="{Binding Index}" Header="Index" />
+                    <DataGridTextColumn Width=".2*" Binding="{Binding Index}" Header="#" />
                     <DataGridTextColumn Width="*" Binding="{Binding IpAddress}" Header="Reply From" />
                     <DataGridTextColumn Width=".5*" Binding="{Binding RoundTripTime}" Header="RTT" />
                     <DataGridTextColumn Width="*" Binding="{Binding Status}" Header="Status" />

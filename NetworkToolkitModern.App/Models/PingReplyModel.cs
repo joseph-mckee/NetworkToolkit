@@ -16,6 +16,6 @@ public class PingReplyModel
     public int Index { get; }
     public string? IpAddress { get; }
     public long RoundtripTime { get; }
-    
+
     public IPStatus Status { get; }
 }

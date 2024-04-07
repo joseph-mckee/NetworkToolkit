@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using NetworkToolkitModern.App.ViewModels;
 
 namespace NetworkToolkitModern.App.Views;
 

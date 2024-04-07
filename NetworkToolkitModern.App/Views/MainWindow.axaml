@@ -15,6 +15,7 @@
     <Window.Styles>
         <StyleInclude Source="../Styles/CustomSyles.axaml" />
     </Window.Styles>
+    <Design.Width>1000</Design.Width>
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
@@ -38,10 +39,10 @@
         </TabControl>
         <Border Grid.Row="1" Classes="frame" Margin="20,0,20,20">
             <Grid ColumnDefinitions="Auto,Auto,Auto">
-                <StackPanel Orientation="Horizontal" >
+                <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Your External IP:  " />
-                    <TextBlock Text="{Binding PublicIpAddress}" />
-                </StackPanel >
+                    <SelectableTextBlock Text="{Binding PublicIpAddress}" />
+                </StackPanel>
                 <Border Grid.Column="1" Width="1" Background="White" Margin="10,0,10,0" />
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <TextBlock Text="Internet Status:  " />

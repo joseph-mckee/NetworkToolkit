@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using NetworkToolkitModern.App.Services;
 
@@ -24,5 +20,4 @@ public partial class ScanView : UserControl
     {
         AvaloniaXamlLoader.Load(this);
     }
-
 }

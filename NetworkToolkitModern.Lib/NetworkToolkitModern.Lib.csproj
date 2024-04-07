@@ -6,13 +6,13 @@
         <DebugType>embedded</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="31.0.2" />
-        <PackageReference Include="Lextm.SharpSnmpLib" Version="12.5.3-alpha.2" />
-        <PackageReference Include="SnmpSharpNet" Version="0.9.6" />
+        <PackageReference Include="CsvHelper" Version="31.0.2"/>
+        <PackageReference Include="Lextm.SharpSnmpLib" Version="12.5.3-alpha.2"/>
+        <PackageReference Include="SnmpSharpNet" Version="0.9.6"/>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Update="Vendor\MACList\oui.csv" />
-        <None Remove="Vendor\MACList\oui.csv" />
-        <EmbeddedResource Include="Vendor\MACList\oui.csv" />
+        <EmbeddedResource Update="Vendor\MACList\oui.csv"/>
+        <None Remove="Vendor\MACList\oui.csv"/>
+        <EmbeddedResource Include="Vendor\MACList\oui.csv"/>
     </ItemGroup>
 </Project>
