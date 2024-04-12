@@ -14,9 +14,9 @@ Please note that this tool is still very early in it's development.
 • IP configuration including Gateway, DNS, DHCP, and other addresses related to your config.  
 • A routing table showing your adapters decision making process for where to send packets.  
 • An ARP table displaying the MAC addresses of noisy neighboring devices.  
-• All live updating every five seconds.  
+• All live updating.  
 
-![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/6cbe81ed-a975-4898-9039-afde6fb1bd79)
+![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/3b5353bd-98be-44ec-afe2-53aa63193edb)
 
 ### Network Scanner:
 
@@ -26,7 +26,7 @@ Please note that this tool is still very early in it's development.
 • Fast and efficient scanning only utilizing the protocol that fits the situation.  
 • Able to scan a wide range of addresses in a short amount of time.  
 
-![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/29dfe8f2-f974-497c-b66a-2de1cd1b5478)
+![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/71028f17-9745-4af6-802f-5f36fc7b6c5d)
 
 ### Ping Tool:
 
@@ -34,13 +34,13 @@ Please note that this tool is still very early in it's development.
 • No limits.  
 • Provides useful statistics about packet loss.
 
-![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/060d82e1-5a24-470b-9ba1-2ab8debd1084)
+![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/8e5b64cd-c825-4d04-bf2e-bc9d2f708d9f)
 
 ### Traceroute Tool:
 
 • Attempts to make the traceroute process more bearable by making DNS queries optional and giving the user more control over its functionality.
 
-![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/1b4e9e70-8ab8-4aa1-8d6d-f3f84f28b4f8)
+![image](https://github.com/joseph-mckee/NetworkToolkit/assets/134827079/519fdc75-5acf-4e75-86c1-2f6bc2e2243d)
 
 ## Plans
 
