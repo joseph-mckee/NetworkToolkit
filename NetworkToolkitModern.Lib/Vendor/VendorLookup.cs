@@ -20,17 +20,12 @@ public class VendorLookup
         _vendors = records.ToList();
     }
 
-    private List<VendorInfo>? GetVendorByMac()
-    {
-        return _vendors;
-    }
-
     public string GetVendorName(string macAddress)
     {
         var uniqueIdentifiers = macAddress.Split(':');
         if (uniqueIdentifiers.Length < 3) return "Unknown";
         var uniqueIdentifier = $"{uniqueIdentifiers[0]}{uniqueIdentifiers[1]}{uniqueIdentifiers[2]}";
-        var data = GetVendorByMac();
+        var data = _vendors;
         if (data == null) return "Unknown";
         var found = data.FirstOrDefault(x => x.Assignment == uniqueIdentifier.ToUpper());
         return found != null ? found.OrganizationName : "Unknown";

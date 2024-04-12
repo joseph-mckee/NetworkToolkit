@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NetworkToolkitModern.App.Models;
 
 namespace NetworkToolkitModern.App.ViewModels;
 
@@ -14,7 +17,10 @@ public partial class MainWindowViewModel : ViewModelBase
     private static readonly Ping Ping = new();
     [ObservableProperty] private string _connectionStatus = string.Empty;
     [ObservableProperty] private string _publicIpAddress = string.Empty;
+    [ObservableProperty] private int _selectedTab;
     private Timer _refreshTimer;
+
+    [ObservableProperty] private ObservableCollection<InterfaceModel> _interfaceModels = new();
 
     public MainWindowViewModel(ScanViewModel scanViewModel, PingViewModel pingViewModel,
         TracerouteViewModel tracerouteViewModel, IpConfigViewModel ipConfigViewModel, SnmpViewModel snmpViewModel)
@@ -24,10 +30,9 @@ public partial class MainWindowViewModel : ViewModelBase
         TracerouteViewModel = tracerouteViewModel;
         IpConfigViewModel = ipConfigViewModel;
         SnmpViewModel = snmpViewModel;
-        _refreshTimer = new Timer(StatusLoop, null, 0, 2000);
+        _refreshTimer = new Timer(StatusLoop, null, 0, 3000);
     }
-
-
+    
     public MainWindowViewModel()
     {
         ScanViewModel = new ScanViewModel();
@@ -35,7 +40,7 @@ public partial class MainWindowViewModel : ViewModelBase
         TracerouteViewModel = new TracerouteViewModel();
         IpConfigViewModel = new IpConfigViewModel();
         SnmpViewModel = new SnmpViewModel();
-        _refreshTimer = new Timer(StatusLoop, null, 0, 2000);
+        _refreshTimer = new Timer(StatusLoop, null, 0, 3000);
     }
 
     public PingViewModel PingViewModel { get; set; }
@@ -43,6 +48,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ScanViewModel ScanViewModel { get; set; }
     public IpConfigViewModel IpConfigViewModel { get; set; }
     public SnmpViewModel SnmpViewModel { get; set; }
+
 
     private void StatusLoop(object? state)
     {
@@ -55,8 +61,8 @@ public partial class MainWindowViewModel : ViewModelBase
         try
         {
             var reply = await Ping.SendPingAsync("8.8.8.8", 1000);
-            if (reply.Status != IPStatus.Success) ConnectionStatus = "Offline";
-            reply = await Ping.SendPingAsync("1.1.1.1", 1000);
+            if (reply.Status != IPStatus.Success) reply = await Ping.SendPingAsync("1.1.1.1", 1000);
+            if (reply.Status != IPStatus.Success) reply = await Ping.SendPingAsync("208.67.222.222", 1000);
             ConnectionStatus = reply.Status == IPStatus.Success ? "Online" : "Offline";
         }
         catch (Exception)

@@ -9,9 +9,12 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NetworkToolkitModern.App.Models;
+using NetworkToolkitModern.App.Views;
 using NetworkToolkitModern.Lib.Arp;
 using NetworkToolkitModern.Lib.IP;
 using NetworkToolkitModern.Lib.Ping;
@@ -35,6 +38,8 @@ public partial class ScanViewModel : ViewModelBase
     [ObservableProperty] private string _progressText = "Scanned: 0/0";
     [ObservableProperty] private string _rangeInput = "192.168.1.1-192.168.1.254";
     [ObservableProperty] private ObservableCollection<ScannedHostModel> _scannedHosts = new();
+    [ObservableProperty] private ObservableCollection<ScannedHostModel> _filteredScannedHosts = new();
+    [ObservableProperty] private string? _scanFilterText = string.Empty;
     [ObservableProperty] private int _timeout;
 
     public ScanViewModel()
@@ -56,6 +61,21 @@ public partial class ScanViewModel : ViewModelBase
         _localNetwork = netInfo.GetAddressRangeFromNetwork().ToList();
     }
 
+    partial void OnScannedHostsChanged(ObservableCollection<ScannedHostModel> value)
+    {
+        OnScanFilterTextChanged(ScanFilterText);
+    }
+    
+    partial void OnScanFilterTextChanged(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            FilteredScannedHosts = ScannedHosts;
+            return;
+        }
+        FilteredScannedHosts = new(ScannedHosts.Where(x => x.Hostname.ToString().ToLower().Contains(value.ToLower()) || x.IpAddress.ToString().ToLower().Contains(value.ToLower()) || x.MacAddress.ToString().ToLower().Contains(value.ToLower()) || x.Vendor.ToString().ToLower().Contains(value.ToLower())).ToList());
+    }
+
     public void Reset()
     {
         Stop();
@@ -74,6 +94,7 @@ public partial class ScanViewModel : ViewModelBase
         _cancellationTokenSource?.Cancel();
     }
 
+    [RelayCommand]
     public async Task StartScan()
     {
         Reset();
@@ -224,7 +245,6 @@ public partial class ScanViewModel : ViewModelBase
                     MacAddress = macAddress,
                     Vendor = vendor,
                     Hostname = name,
-                    IpBits = IpMath.IpToBits(hostAddress)
                 });
             });
         }
@@ -232,5 +252,11 @@ public partial class ScanViewModel : ViewModelBase
         {
             Debug.WriteLine($"Adding host: {hostAddress} operation cancelled.");
         }
+    }
+
+    [RelayCommand]
+    public async Task Export()
+    {
+        
     }
 }

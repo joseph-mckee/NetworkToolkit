@@ -23,9 +23,9 @@
             <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Styles>
-    <Grid Margin="10" ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
-        <Border Grid.RowSpan="2" Classes="frame"
-                BorderThickness="1" Padding="10">
+    <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto,Auto">
+        <Border Grid.RowSpan="3" Margin="10,10,0,0" Classes="frame"
+                BorderThickness="1">
             <Grid MaxWidth="600" ClipToBounds="True" ColumnDefinitions="*,*,*"
                   RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
                   HorizontalAlignment="Left">
@@ -100,8 +100,8 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Border Grid.Column="1" Grid.Row="0" Classes="frame" Margin="10,0,0,0">
-            <DataGrid HorizontalAlignment="Stretch" Name="ReplyGrid" CanUserResizeColumns="True"
+        <Border Grid.Column="1" Grid.Row="0" Classes="frame" Margin="10,10,10,0">
+            <DataGrid Classes="replyGrid" HorizontalAlignment="Stretch" Name="ReplyGrid" CanUserResizeColumns="True"
                       CanUserSortColumns="False" IsReadOnly="True" GridLinesVisibility="Horizontal"
                       ItemsSource="{Binding PingReplies}">
                 <DataGrid.Styles>
@@ -113,40 +113,44 @@
                     </Style>
                 </DataGrid.Styles>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width=".2*" Binding="{Binding Index}" Header="#" />
+                    <DataGridTextColumn Width=".3*" Binding="{Binding Index}" Header="#" />
                     <DataGridTextColumn Width="*" Binding="{Binding IpAddress}" Header="Reply From" />
                     <DataGridTextColumn Width=".5*" Binding="{Binding RoundtripTime}" Header="RTT" />
                     <DataGridTextColumn Width="*" Binding="{Binding Status}" Header="Status" />
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
-        <Border Grid.Row="1" Grid.Column="1" Classes="frame" HorizontalAlignment="Stretch" Margin="10,10,0,0"
-                Padding="10">
-            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="*" ClipToBounds="True">
-                <StackPanel Margin="10,0,10,0" Grid.Column="0" Orientation="Horizontal">
+        <Border Grid.Row="1" Grid.Column="1" Classes="frame" HorizontalAlignment="Stretch" Margin="10,10,10,0">
+            <Grid ColumnDefinitions="Auto,Auto,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Successful:  " />
                     <TextBlock VerticalAlignment="Center" Foreground="ForestGreen" Text="{Binding SuccessfulPings}" />
                 </StackPanel>
-                <StackPanel Margin="10,0,10,0" Grid.Column="1" Orientation="Horizontal">
+                <StackPanel Margin="10,0,0,0" Grid.Column="1" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Failed:  " />
                     <TextBlock VerticalAlignment="Center" Foreground="Crimson" Text="{Binding FailedPings}" />
                 </StackPanel>
-                <StackPanel Margin="10,0,10,0" Grid.Column="2" Orientation="Horizontal">
+                <StackPanel Margin="10,0,0,0" Grid.Column="2" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Packet Loss:  " />
                     <TextBlock VerticalAlignment="Center" Foreground="Crimson" Text="{Binding PacketLoss}" />
                 </StackPanel>
-                <StackPanel Margin="10,0,10,0" Grid.Column="3" Orientation="Horizontal">
+            </Grid>
+        </Border>
+        <Border Grid.Row="2" Grid.Column="1" Classes="frame" HorizontalAlignment="Stretch" Margin="10,10,10,0"
+                Padding="10">
+            <Grid ColumnDefinitions="Auto,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Average RTT:  " />
                     <TextBlock VerticalAlignment="Center" Text="{Binding RoundTripTime}" />
                 </StackPanel>
-                <StackPanel Margin="10,0,10,0" Grid.Column="4" Orientation="Horizontal">
+                <StackPanel Margin="10,0,0,0" Grid.Column="1" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Hostname:  " />
                     <TextBlock VerticalAlignment="Center" Text="{Binding Hostname}" />
                 </StackPanel>
             </Grid>
         </Border>
-        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="frame" Margin="0,10,0,0">
-            <Border VerticalAlignment="Center" BoxShadow="0 0 10 0 #DD000000">
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Classes="frame" Margin="10,10,10,10">
+            <Border Margin="5" VerticalAlignment="Center" BoxShadow="0 0 10 0 #DD000000">
                 <ProgressBar VerticalAlignment="Center" Opacity=".8" Foreground="MediumPurple" Height="15"
                              Value="{Binding Progress}"
                              IsIndeterminate="{Binding IsIndeterminate}"

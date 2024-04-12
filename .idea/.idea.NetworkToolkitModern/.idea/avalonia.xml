@@ -11,6 +11,7 @@
         <entry key="NetworkToolkitModern.App/Views/MainWindow.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/MainWindowView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/PingView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
+        <entry key="NetworkToolkitModern.App/Views/RouteTableView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/ScanView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/SnmpView.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />
         <entry key="NetworkToolkitModern.App/Views/Test.axaml" value="NetworkToolkitModern.App/NetworkToolkitModern.App.csproj" />

@@ -23,6 +23,8 @@
             <SolidColorBrush x:Key="CheckBoxCardCheckedPressedBorderBrush" Color="#FFa9acff" />
             <SolidColorBrush x:Key="DataGridRowSelectedBackground" Opacity="0.2" Color="MediumPurple" />
             <SolidColorBrush x:Key="DataGridRowSelectedPointeroverBackground" Opacity="0.3" Color="MediumPurple" />
+            <SolidColorBrush x:Key="ExpanderHeaderHoverBackground" Opacity="0.05" Color="White" />
+            <SolidColorBrush x:Key="ExpanderHeaderPressedBackground" Opacity="0.10" Color="White" />
         </ResourceDictionary>
     </Styles.Resources>
     <Style Selector="Border.frame">
@@ -35,7 +37,7 @@
     <Style Selector="Border.routeSplitter">
         <Setter Property="Width" Value="1" />
         <Setter Property="Background" Value="White" />
-        <Setter Property="Opacity" Value=".3" />
+        <Setter Property="Opacity" Value=".05" />
     </Style>
     <Style Selector="TextBlock">
         <Setter Property="Foreground" Value="White" />
@@ -49,6 +51,7 @@
     </Style>
     <Style Selector="Button">
         <Setter Property="Foreground" Value="MediumPurple" />
+        <Setter Property="FontSize" Value="12" />
     </Style>
     <Style Selector="TextBlock.exLabel">
         <Setter Property="Foreground" Value="MediumPurple" />
@@ -71,5 +74,26 @@
     </Style>
     <Style Selector="ComboBoxItem:focus-within">
         <Setter Property="Background" Value="MediumPurple" />
+    </Style>
+    <Style Selector="DataGridRow">
+        <Setter Property="Height" Value="30" />
+    </Style>
+    <Style Selector="DataGrid.replyGrid DataGridCell:selected Rectangle">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="DataGridCell:selected Rectangle">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="DataGridCell:focus Rectangle">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="DataGrid.scanGrid DataGridColumnHeader ContentPresenter">
+        <Setter Property="Margin" Value="5,0,5,0" />
+    </Style>
+    <Style Selector="StackPanel">
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+    <Style Selector="Grid">
+        <Setter Property="ClipToBounds" Value="True" />
     </Style>
 </Styles>

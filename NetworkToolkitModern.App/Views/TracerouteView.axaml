@@ -22,8 +22,9 @@
             <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Styles>
-    <Grid Margin="10" ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
-        <Border Grid.RowSpan="2" Classes="frame" Padding="20">
+    <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
+        <Border Grid.RowSpan="2" 
+                Classes="frame" Margin="10">
             <Grid MaxWidth="800" ClipToBounds="True" ColumnDefinitions="*,*"
                   RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
                   HorizontalAlignment="Left">
@@ -74,8 +75,9 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Border Grid.Row="0" Grid.Column="1" Classes="frame" Margin="10,0,0,0">
-            <DataGrid HorizontalAlignment="Stretch" IsReadOnly="True" CanUserSortColumns="False"
+        <Border Grid.Row="0" Grid.Column="1" 
+                Classes="frame" Margin="0,10,10,10">
+            <DataGrid Classes="replyGrid" HorizontalAlignment="Stretch" IsReadOnly="True" CanUserSortColumns="False"
                       CanUserResizeColumns="True" GridLinesVisibility="Horizontal"
                       ItemsSource="{Binding TracerouteReplyModels}">
                 <DataGrid.Styles>
@@ -87,7 +89,7 @@
                     </Style>
                 </DataGrid.Styles>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width=".2*" Binding="{Binding Index}" Header="#" />
+                    <DataGridTextColumn Width=".3*" Binding="{Binding Index}" Header="#" />
                     <DataGridTextColumn Width="*" Binding="{Binding IpAddress}" Header="Reply From" />
                     <DataGridTextColumn Width=".5*" Binding="{Binding RoundTripTime}" Header="RTT" />
                     <DataGridTextColumn Width="*" Binding="{Binding Status}" Header="Status" />

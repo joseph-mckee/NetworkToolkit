@@ -20,7 +20,7 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid RowDefinitions="*,Auto">
-        <TabControl Margin="10,10,10,0">
+        <TabControl SelectedIndex="{Binding SelectedTab}" Margin="10,10,10,0">
             <TabItem IsSelected="{Binding IpConfigViewModel.IsFocused, Mode=OneWayToSource}" Header="IP Config">
                 <v:IpConfigView DataContext="{Binding IpConfigViewModel}" />
             </TabItem>

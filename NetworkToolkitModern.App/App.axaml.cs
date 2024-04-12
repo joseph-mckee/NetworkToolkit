@@ -27,12 +27,16 @@ public class App : Application
     private static IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
+
         services.AddSingleton<ScanViewModel>();
         services.AddSingleton<PingViewModel>();
         services.AddSingleton<TracerouteViewModel>();
         services.AddSingleton<IpConfigViewModel>();
         services.AddSingleton<SnmpViewModel>();
         services.AddSingleton<MainWindowViewModel>();
+
+        // services.AddTransient<RouteTableView>();
+
         return services.BuildServiceProvider();
     }
 
