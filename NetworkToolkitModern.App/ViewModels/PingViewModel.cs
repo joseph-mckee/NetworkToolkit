@@ -17,13 +17,13 @@ namespace NetworkToolkitModern.App.ViewModels;
 
 public partial class PingViewModel : ViewModelBase
 {
-    [ObservableProperty] private string _attempts = "4";
-    [ObservableProperty] private string _buffer = "32";
+    [ObservableProperty] private int? _attempts = 4;
+    [ObservableProperty] private int? _buffer = 32;
     private CancellationTokenSource? _cancellationTokenSource;
-    [ObservableProperty] private string _delay = "200";
+    [ObservableProperty] private int? _delay = 200;
     [ObservableProperty] private int _failedPings;
     [ObservableProperty] private bool _fragmentable;
-    [ObservableProperty] private string _hops = "30";
+    [ObservableProperty] private int? _hops = 30;
     [ObservableProperty] private string _host = "8.8.8.8";
     [ObservableProperty] private string _hostname = string.Empty;
     [ObservableProperty] private bool _isContinuous;
@@ -40,7 +40,8 @@ public partial class PingViewModel : ViewModelBase
     [ObservableProperty] private int _selectedIndex;
     [ObservableProperty] private InterfaceModel? _selectedInterface;
     [ObservableProperty] private int _successfulPings;
-    [ObservableProperty] private string _timeout = "1000";
+    [ObservableProperty] private int? _timeout = 1000;
+
 
     public PingViewModel()
     {
@@ -78,10 +79,10 @@ public partial class PingViewModel : ViewModelBase
     {
         PingOptions pingOptions = new()
         {
-            Ttl = int.Parse(Hops),
+            Ttl = Hops.Value,
             DontFragment = !Fragmentable
         };
-        var buffer = new byte[int.Parse(Buffer)];
+        var buffer = new byte[Buffer.Value];
         try
         {
             ResolveDnsInBackground(Host, cancellationToken);
@@ -109,7 +110,7 @@ public partial class PingViewModel : ViewModelBase
         }
         else
         {
-            for (var i = 0; i < int.Parse(Attempts); i++)
+            for (var i = 0; i < Attempts; i++)
                 try
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -133,7 +134,7 @@ public partial class PingViewModel : ViewModelBase
             if (SelectedInterface?.IpAddress is null) return;
             var source = IPAddress.Parse(SelectedInterface.IpAddress);
             var dest = IPAddress.Parse(Host);
-            var reply = await Task.Run(() => PingEx.Send(source, dest, int.Parse(Timeout), buffer, pingOptions),
+            var reply = await Task.Run(() => PingEx.Send(source, dest, Timeout.Value, buffer, pingOptions),
                 cancellationToken);
             Dispatcher.UIThread.Invoke(() =>
             {
@@ -152,7 +153,7 @@ public partial class PingViewModel : ViewModelBase
 
         try
         {
-            if (Progress < int.Parse(Attempts) || IsContinuous) await Task.Delay(int.Parse(Delay), cancellationToken);
+            if (Progress < Attempts || IsContinuous) await Task.Delay(Delay.Value, cancellationToken);
         }
         catch (OperationCanceledException ex)
         {
@@ -173,11 +174,6 @@ public partial class PingViewModel : ViewModelBase
                 return false;
             }
 
-        if (!int.TryParse(Attempts, out _)) return false;
-        if (!int.TryParse(Hops, out _)) return false;
-        if (!int.TryParse(Timeout, out _)) return false;
-        if (!int.TryParse(Buffer, out _)) return false;
-        if (!int.TryParse(Delay, out _)) return false;
         return true;
     }
 
@@ -240,6 +236,11 @@ public partial class PingViewModel : ViewModelBase
     }
 
     #region Properties
+
+    partial void OnAttemptsChanging(int? value)
+    {
+        if (value < 0) Attempts = 0;
+    }
 
     partial void OnSelectedIndexChanged(int value)
     {

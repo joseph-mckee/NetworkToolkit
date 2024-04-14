@@ -17,16 +17,16 @@ namespace NetworkToolkitModern.App.ViewModels;
 public partial class TracerouteViewModel : ViewModelBase
 {
     private CancellationTokenSource? _cancellationTokenSource;
-    [ObservableProperty] private string _delay = "200";
+    [ObservableProperty] private int? _delay = 200;
     [ObservableProperty] private bool _doResolve;
-    [ObservableProperty] private string _hops = "30";
+    [ObservableProperty] private int? _hops = 30;
     [ObservableProperty] private string _host = "8.8.8.8";
     [ObservableProperty] private bool _isStarted;
     [ObservableProperty] private bool _isStopped = true;
     [ObservableProperty] private ObservableCollection<InterfaceModel> _networkInterfaces = new();
     [ObservableProperty] private int _selectedIndex;
     [ObservableProperty] private InterfaceModel? _selectedInterface;
-    [ObservableProperty] private string _timeout = "1000";
+    [ObservableProperty] private int? _timeout = 1000;
 
     [ObservableProperty] private ObservableCollection<TracerouteReplyModel>? _tracerouteReplyModels;
 
@@ -106,7 +106,7 @@ public partial class TracerouteViewModel : ViewModelBase
         var token = _cancellationTokenSource.Token;
         try
         {
-            for (var i = 1; i < int.Parse(Hops); i++)
+            for (var i = 1; i < Hops; i++)
             {
                 token.ThrowIfCancellationRequested();
                 PingOptions pingOptions = new()
@@ -119,7 +119,7 @@ public partial class TracerouteViewModel : ViewModelBase
                 {
                     var source = IPAddress.Parse(SelectedInterface?.IpAddress ?? throw new InvalidOperationException());
                     var dest = IPAddress.Parse(Host);
-                    var reply = await Task.Run(() => PingEx.Send(source, dest, int.Parse(Timeout), buffer, pingOptions),
+                    var reply = await Task.Run(() => PingEx.Send(source, dest, Timeout.Value, buffer, pingOptions),
                         token);
                     token.ThrowIfCancellationRequested();
                     if (reply.Status is IPStatus.Success or IPStatus.TtlExpired)
@@ -167,7 +167,7 @@ public partial class TracerouteViewModel : ViewModelBase
                 }
 
                 // Handle empty field
-                await Task.Delay(int.Parse(Delay), token);
+                await Task.Delay(Delay.Value, token);
             }
         }
         catch (OperationCanceledException)

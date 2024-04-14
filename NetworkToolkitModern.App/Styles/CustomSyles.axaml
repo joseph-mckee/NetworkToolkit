@@ -32,7 +32,12 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BoxShadow" Value="0 0 10 0 #DD000000" />
         <Setter Property="Background" Value="#0DFFFFFF" />
-        <Setter Property="Padding" Value="10" />
+    </Style>
+    <Style Selector="Border.frame > Grid">
+        <Setter Property="Margin" Value="10" />
+    </Style>
+    <Style Selector="Border.frame > StackPanel">
+        <Setter Property="Margin" Value="10" />
     </Style>
     <Style Selector="Border.routeSplitter">
         <Setter Property="Width" Value="1" />
@@ -62,9 +67,6 @@
     <Style Selector="GridSplitter">
         <Setter Property="Background" Value="MediumPurple" />
         <Setter Property="Width" Value="5" />
-    </Style>
-    <Style Selector="Expander Grid Border.frame">
-        <Setter Property="Padding" Value="15" />
     </Style>
     <Style Selector="ComboBox:focus Border">
         <Setter Property="BorderBrush" Value="MediumPurple" />

@@ -12,116 +12,125 @@
     <UserControl.Styles>
         <StyleInclude Source="../Styles/CustomSyles.axaml" />
     </UserControl.Styles>
-    <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto,Auto">
-        <Border Grid.ColumnSpan="2" 
-                Classes="frame" Margin="10,10,10,0">
-            <DataGrid Name="HostGrid" Classes="scanGrid" HorizontalAlignment="Stretch" CanUserResizeColumns="True"
-                      CanUserSortColumns="True" IsReadOnly="True" GridLinesVisibility="All"
-                      ItemsSource="{Binding FilteredScannedHosts}">
-                <DataGrid.Styles>
-                    <Style Selector="DataGridCell">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                    <Style Selector="DataGridColumnHeader">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                    <Style Selector="DataGridCell.ipColumn">
-                        <Setter Property="ContextMenu">
-                            <Setter.Value>
-                                <ContextMenu>
-                                    <MenuItem Header="Ping" Click="Ping_OnClick" />
-                                    <MenuItem Header="Traceroute" Click="Traceroute_OnClick"></MenuItem>
-                                    <MenuItem Header="Open in Browser" Click="OpenIp_OnClick" />
-                                    <MenuItem Header="Copy IP" Click="CopyIp_OnClick" />
-                                </ContextMenu>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style Selector="DataGridCell.macColumn">
-                        <Setter Property="ContextMenu">
-                            <Setter.Value>
-                                <ContextMenu>
-                                    <MenuItem Header="Copy MAC" Click="CopyMac_OnClick" />
-                                </ContextMenu>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style Selector="DataGridCell.hostColumn">
-                        <Setter Property="ContextMenu">
-                            <Setter.Value>
-                                <ContextMenu>
-                                    <MenuItem Header="Copy Hostname" Click="CopyHost_OnClick" />
-                                </ContextMenu>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style Selector="DataGridCell.vendorColumn">
-                        <Setter Property="ContextMenu">
-                            <Setter.Value>
-                                <ContextMenu>
-                                    <MenuItem Header="Copy Vendor" Click="CopyVendor_OnClick" />
-                                </ContextMenu>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </DataGrid.Styles>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Hostname" CellStyleClasses="hostColumn" 
-                                        Width="*" 
-                                        Binding="{Binding Hostname}" />
-                    <DataGridTextColumn Header="IP Address" CellStyleClasses="ipColumn" 
-                                        Width="*" 
-                                        Binding="{Binding IpAddress}" />
-                    <DataGridTextColumn Header="MAC Address" CellStyleClasses="macColumn" 
-                                        Width="*" 
-                                        Binding="{Binding MacAddress}" />
-                    <DataGridTextColumn Header="Vendor" CellStyleClasses="vendorColumn" 
-                                        Width="*" 
-                                        Binding="{Binding Vendor}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
-        <Border Grid.Column="0" Grid.Row="1" 
-                Classes="frame" Margin="10,10,10,0">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="Active Hosts:  " />
-                <TextBlock Text="{Binding ScannedHosts.Count}" />
-                <TextBlock Margin="10,0,0,0" Text="Elapsed Time:  " />
-                <TextBlock Text="{Binding Elapsed}" />
-            </StackPanel>
-        </Border>
-        <Border Grid.Column="1" Grid.Row="1" 
-                Classes="frame" Margin="0,10,10,0">
-            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto, Auto">
-                <Button Grid.Column="0" Margin="0,0,10,0" FontSize="12" Content="Export Results"
-                        IsEnabled="{Binding IsStopped}" Click="Export_OnClick" />
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <TextBlock Margin="0,0,0,0" VerticalAlignment="Center" Text="Filter:  " />
-                    <TextBox FontSize="12" Watermark="Enter search text..." Margin="0,0,10,0" MinWidth="120" Text="{Binding ScanFilterText}" />
+    <Border Classes="frame" Margin="10">
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,*,Auto,Auto,Auto" Margin="0">
+            <Border Grid.Row="0" Grid.ColumnSpan="2" Classes="frame" Margin="10,10,10,0">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Margin="0,0,0,0" VerticalAlignment="Center" Text="Filter:  " />
+                        <TextBox FontSize="12" Watermark="Enter search text..." Margin="0,0,10,0" MinWidth="200"
+                                 Text="{Binding ScanFilterText}" />
+                    </StackPanel>
+                    <Button Grid.Column="2" FontSize="12" Content="Export Results"
+                            IsEnabled="{Binding IsStopped}" Click="Export_OnClick" />
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Grid.ColumnSpan="2"
+                    Classes="frame" Margin="10,10,10,0" Padding="0">
+                <DataGrid Name="HostGrid" Classes="scanGrid" HorizontalAlignment="Stretch" CanUserResizeColumns="True"
+                          CanUserSortColumns="True" IsReadOnly="True" GridLinesVisibility="All"
+                          ItemsSource="{Binding FilteredScannedHosts}">
+                    <DataGrid.Styles>
+                        <Style Selector="DataGridCell">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style Selector="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style Selector="DataGridCell.ipColumn">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Header="Ping" Click="Ping_OnClick" />
+                                        <MenuItem Header="Traceroute" Click="Traceroute_OnClick" />
+                                        <MenuItem Header="Open in Browser" Click="OpenIp_OnClick" />
+                                        <MenuItem Header="Copy IP" Click="CopyIp_OnClick" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style Selector="DataGridCell.macColumn">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Header="Copy MAC" Click="CopyMac_OnClick" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style Selector="DataGridCell.hostColumn">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Header="Copy Hostname" Click="CopyHost_OnClick" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style Selector="DataGridCell.vendorColumn">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Header="Copy Vendor" Click="CopyVendor_OnClick" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.Styles>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Hostname" CellStyleClasses="hostColumn"
+                                            Width="*"
+                                            Binding="{Binding Hostname}" />
+                        <DataGridTextColumn Header="IP Address" CellStyleClasses="ipColumn"
+                                            Width="*"
+                                            Binding="{Binding IpAddress}" />
+                        <DataGridTextColumn Header="MAC Address" CellStyleClasses="macColumn"
+                                            Width="*"
+                                            Binding="{Binding MacAddress}" />
+                        <DataGridTextColumn Header="Vendor" CellStyleClasses="vendorColumn"
+                                            Width="*"
+                                            Binding="{Binding Vendor}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+            <Border Grid.Column="0" Grid.Row="2"
+                    Classes="frame" Margin="10,10,10,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="Active Hosts:  " />
+                    <TextBlock Text="{Binding ScannedHosts.Count}" />
+                    <TextBlock Margin="10,0,0,0" Text="Elapsed Time:  " />
+                    <TextBlock Text="{Binding Elapsed}" />
                 </StackPanel>
-                <TextBox Grid.Column="2" FontSize="12" Text="{Binding RangeInput}" />
-                <Button FontSize="12" Grid.Column="3" IsEnabled="{Binding IsStopped}" Command="{Binding StartScan}"
-                        Margin="10,0,10,0"
-                        Content="Start" />
-                <Button FontSize="12" Grid.Column="4" IsEnabled="{Binding IsScanning}" Command="{Binding Stop}"
-                        Margin="0,0,10,0"
-                        Content="Stop" />
-                <Button FontSize="12" Grid.Column="5" IsEnabled="{Binding IsStopped}" Command="{Binding Reset}"
-                        Content="Reset" />
-            </Grid>
-        </Border>
-        <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" 
-                Classes="frame" Margin="10,10,10,10">
-            <Grid ColumnDefinitions="Auto, *">
-                <TextBlock Margin="0,0,10,0" Text="{Binding ProgressText}" TextAlignment="Center"
-                           VerticalAlignment="Center" />
-                <Border Margin="5" VerticalAlignment="Center" Grid.Column="1" BoxShadow="0 0 10 0 #DD000000">
-                    <ProgressBar VerticalAlignment="Center" Opacity=".8" Foreground="MediumPurple"
-                                 Value="{Binding Progress}"
-                                 Maximum="{Binding Goal}" Height="15" />
-                </Border>
-            </Grid>
+            </Border>
+            <Border Grid.Column="1" Grid.Row="2"
+                    Classes="frame" Margin="0,10,10,0">
+                <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto, Auto">
+                    <Button FontSize="12" Margin="0,0,10,0" Content="Scan Local" IsEnabled="{Binding IsStopped}"
+                            Command="{Binding ScanLocalCommand}" />
+                    <TextBox Grid.Column="2" FontSize="12" Text="{Binding RangeInput}" />
+                    <Button FontSize="12" Grid.Column="3" IsEnabled="{Binding IsStopped}" Command="{Binding StartScan}"
+                            Margin="10,0,10,0"
+                            Content="Start" />
+                    <Button FontSize="12" Grid.Column="4" IsEnabled="{Binding IsScanning}" Command="{Binding Stop}"
+                            Margin="0,0,10,0"
+                            Content="Stop" />
+                    <Button FontSize="12" Grid.Column="5" IsEnabled="{Binding IsStopped}" Command="{Binding Reset}"
+                            Content="Reset" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"
+                    Classes="frame" Margin="10,10,10,10">
+                <Grid ColumnDefinitions="Auto, *">
+                    <TextBlock Margin="0,0,10,0" Text="{Binding ProgressText}" TextAlignment="Center"
+                               VerticalAlignment="Center" />
+                    <Border Margin="5" VerticalAlignment="Center" Grid.Column="1" BoxShadow="0 0 10 0 #DD000000">
+                        <ProgressBar VerticalAlignment="Center" Opacity=".8" Foreground="MediumPurple"
+                                     Value="{Binding Progress}"
+                                     Maximum="{Binding Goal}" Height="15" />
+                    </Border>
+                </Grid>
 
-        </Border>
-    </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

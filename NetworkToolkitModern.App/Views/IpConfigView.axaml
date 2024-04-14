@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:NetworkToolkitModern.App.ViewModels"
              xmlns:m="clr-namespace:NetworkToolkitModern.App.Models"
-             xmlns:v="clr-namespace:NetworkToolkitModern.App.Views"
              xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System.Net.NetworkInformation"
              xmlns:net="clr-namespace:System.Net;assembly=System.Net.Primitives"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
@@ -35,30 +34,6 @@
         <DataTemplate DataType="net:IPAddress">
             <SelectableTextBlock HorizontalAlignment="Left" Text="{Binding DataType=net:IPAddress}" />
         </DataTemplate>
-        <DataTemplate DataType="m:ArpEntryModel">
-            <Grid Margin="2" ColumnDefinitions="*,*,*,*,*">
-                <TextBlock Grid.Column="0" Text="{Binding IpAddress}"
-                           TextAlignment="Left" />
-                <TextBlock Grid.Column="1" Text="|" />
-                <TextBlock TextAlignment="Center" Grid.Column="2"
-                           Text="{Binding MacAddress}" />
-                <TextBlock Grid.Column="3" Text="|" />
-                <TextBlock TextAlignment="Right" Grid.Column="4"
-                           Text="{Binding Vendor}" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate DataType="m:RouteRowModel">
-            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*">
-                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Destination}" />
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Mask}" />
-                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Policy}" />
-                <TextBlock Grid.Column="3" HorizontalAlignment="Center" Text="{Binding NextHop}" />
-                <TextBlock Grid.Column="4" HorizontalAlignment="Center" Text="{Binding Type}" />
-                <TextBlock Grid.Column="5" HorizontalAlignment="Center" Text="{Binding Proto}" />
-                <TextBlock Grid.Column="6" HorizontalAlignment="Center" Text="{Binding Age}" />
-                <TextBlock Grid.Column="7" HorizontalAlignment="Center" Text="{Binding Metric1}" />
-            </Grid>
-        </DataTemplate>
     </UserControl.DataTemplates>
     <UserControl.Styles>
         <StyleInclude Source="../Styles/CustomSyles.axaml" />
@@ -82,532 +57,537 @@
             <Setter Property="StrokeLineCap" Value="Round" />
         </Style>
     </UserControl.Styles>
-    <Grid RowDefinitions="*,Auto">
-        <Border Grid.Row="1" Classes="frame" Margin="10">
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" HorizontalAlignment="Stretch">
-                <TextBlock VerticalAlignment="Center" Text="Select Interface:  " />
-                <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding InterfaceModels}"
-                          SelectedIndex="{Binding SelectedInterface}" />
-                <StackPanel Grid.Column="2" Margin="10,0,0,0" Orientation="Horizontal">
-                    <Button Content="Expand All" Command="{Binding ExpandAll}" />
-                    <Button Margin="10,0,0,0" Content="Collapse All" Command="{Binding CollapseAll}" />
-                </StackPanel>
-                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Left">
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Filter:  " />
-                    <TextBox FontSize="12" Watermark="Enter search text..." VerticalAlignment="Center" MinWidth="200"
-                             Text="{Binding ArpTableFilterText}" />
-                </StackPanel>
-                <StackPanel Grid.Column="4" Margin="10,0,0,0" Orientation="Horizontal">
-                    <TextBlock Text="Auto Refresh:  " VerticalAlignment="Center" />
-                    <CheckBox IsChecked="{Binding DoRefresh}" Margin="0,0,10,0" />
-                    <TextBlock Text="Refresh Interval (s):  " VerticalAlignment="Center" />
-                    <NumericUpDown Minimum="1" Maximum="60" AllowSpin="True" ParsingNumberStyle="Integer"
-                                   IsEnabled="{Binding DoRefresh}" Value="{Binding RefreshInterval}" Increment="1"
-                                   MinWidth="60" />
-                    <Button Content="Refresh" Command="{Binding Update}" IsEnabled="{Binding !DoRefresh}"
-                            Margin="10,0,0,0" />
-                </StackPanel>
-            </Grid>
-        </Border>
-        <!-- <Border Grid.Row="0" Classes="frame"> -->
-        <ScrollViewer Grid.Row="0">
-            <StackPanel Orientation="Vertical">
-                <Border Margin="10,10,10,0" Classes="frame">
-                    <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                              IsExpanded="{Binding IsInterfaceInfoExpanded}">
-                        <Expander.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Classes="exLabel" Text="Interface Info:" />
-                            </DataTemplate>
-                        </Expander.HeaderTemplate>
-                        <Grid ColumnDefinitions="*,Auto,*" HorizontalAlignment="Stretch">
-                            <Border Margin="5,5,0,5" Classes="frame">
-                                <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*">
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="0" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Index: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Index}" />
+    <Border Classes="frame" Margin="10">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="0">
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Orientation="Vertical">
+                    <Border Margin="10,10,10,0" Classes="frame">
+                        <Expander Padding="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                  IsExpanded="{Binding IsInterfaceInfoExpanded}">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Classes="exLabel" Text="Interface Info:" />
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                            <Grid ColumnDefinitions="*,Auto,*" HorizontalAlignment="Stretch">
+                                <Border Margin="5,5,0,5" Classes="frame">
+                                    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*">
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="0" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Index: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Index}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="1" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Name: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Name}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="2" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Description: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Description}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="3" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Status: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Status}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="4" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="MAC Address: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding PhysicalAddress}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="5" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="DNS Suffix: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding DnsSuffix}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="6" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Type: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Type}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="7" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Speed: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Speed}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="8" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="MTU: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Mtu}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="9" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="ID: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding Id}" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="1" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Name: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Name}" />
+                                </Border>
+                                <GridSplitter Grid.Column="1" Margin="15,0,15,0" />
+                                <Border Grid.Column="2" Margin="0,5,5,5" Classes="frame">
+                                    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*">
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Receive Only: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding ReceiveOnly}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="1"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="DHCP Enabled: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding DhcpEnabled}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="2"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="DNS Enabled: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding DnsEnabled}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="3"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Forwarding Enabled: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding ForwardingEnabled}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="4"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Dynamic DNS Enabled: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding DynamicDnsEnabled}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="5"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Wins Enabled: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding UsesWins}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="6"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="APIPA Enabled: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding AutomaticPrivateAddressingEnabled}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="7"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="APIPA Active: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding AutomaticPrivateAddressingActive}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="8"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Multicast Support: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                                 Text="{Binding MulticastSupport}" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="2" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Description: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Description}" />
+                                </Border>
+                            </Grid>
+                        </Expander>
+                    </Border>
+                    <Border Margin="10,10,10,0" Classes="frame">
+                        <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                  IsExpanded="{Binding IsAddressInfoExpanded}">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Classes="exLabel" Text="Address Info:" />
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                            <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto,*">
+                                <Border Margin="5,5,0,5" Classes="frame">
+                                    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*">
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="0" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="IP Addresses: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding Addresses}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="1" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Subnet Mask: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right">
+                                                <SelectableTextBlock Text="{Binding SubnetMask}" />
+                                            </ItemsControl>
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="2" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Gateways: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding GatewayAddresses}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="3" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="DNS Servers: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding DnsAddresses}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="4" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="DHCP Servers: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding DhcpAddresses}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="5" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Wins Servers: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding WinsServerAddresses}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="6" Grid.Column="0"
+                                              RowDefinitions="Auto,*"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Anycast Addresses: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
+                                            <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding AnycastAddresses}" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="3" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Status: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Status}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="4" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="MAC Address: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding PhysicalAddress}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="5" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="DNS Suffix: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding DnsSuffix}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="6" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Type: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Type}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="7" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Speed: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Speed}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="8" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="MTU: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Mtu}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="9" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="ID: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding Id}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <GridSplitter Grid.Column="1" Margin="15,0,15,0" />
-                            <Border Grid.Column="2" Margin="0,5,5,5" Classes="frame">
-                                <Grid RowDefinitions="*,*,*,*,*,*,*,*,*">
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Receive Only: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding ReceiveOnly}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="1"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="DHCP Enabled: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding DhcpEnabled}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="2"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="DNS Enabled: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding DnsEnabled}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="3"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Forwarding Enabled: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding ForwardingEnabled}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="4"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Dynamic DNS Enabled: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding DynamicDnsEnabled}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="5"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Wins Enabled: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding UsesWins}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="6"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="APIPA Enabled: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding AutomaticPrivateAddressingEnabled}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="7"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="APIPA Active: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding AutomaticPrivateAddressingActive}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="8"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Multicast Support: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                             Text="{Binding MulticastSupport}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </Grid>
-                    </Expander>
-                </Border>
-                <Border Margin="10,10,10,0" Classes="frame">
-                    <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                              IsExpanded="{Binding IsAddressInfoExpanded}">
-                        <Expander.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Classes="exLabel" Text="Address Info:" />
-                            </DataTemplate>
-                        </Expander.HeaderTemplate>
-                        <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto,*">
-                            <Border Margin="5,5,0,5" Classes="frame">
-                                <Grid RowDefinitions="*,*,*,*,*,*,*,*,*">
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="0" Grid.Column="0"
+                                </Border>
+                                <GridSplitter Grid.Column="1" Margin="15,0,15,0" />
+                                <Border Grid.Column="2" Margin="0,5,5,5" Classes="frame">
+                                    <Grid ClipToBounds="True" Margin="10"
                                           RowDefinitions="Auto,*"
                                           ColumnDefinitions="Auto,*,Auto">
                                         <TextBlock HorizontalAlignment="Left"
-                                                   Text="IP Addresses: " />
+                                                   Text="Multicast Addresses: " />
                                         <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
                                         <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right"
-                                                      ItemsSource="{Binding Addresses}" />
+                                                      ItemsSource="{Binding MulticastAddresses}" />
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="1" Grid.Column="0"
-                                          RowDefinitions="Auto,*"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Subnet Mask: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                        <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right">
-                                            <SelectableTextBlock Text="{Binding SubnetMask}" />
-                                        </ItemsControl>
+                                </Border>
+                            </Grid>
+                        </Expander>
+                    </Border>
+                    <Border Margin="10,10,10,0" Classes="frame">
+                        <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                  IsExpanded="{Binding IsStatisticsExpanded}">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Classes="exLabel" Text="Statistics:" />
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                            <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto,*">
+                                <Border Margin="5,5,0,5" Classes="frame">
+                                    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*">
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="0" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Bytes Sent: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding BytesSent}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="1" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left" Text="Bytes Received: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding BytesReceived}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="2" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Unicast Packets Sent: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding UnicastPacketsSent}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="3" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Unicast Packets Received: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding UnicastPacketsReceived}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="4" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Non-Unicast Packets Sent: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding NonUnicastPacketsSent}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="5" Grid.Column="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Non-Unicast Packets Received: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding NonUnicastPacketsReceived}" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="2" Grid.Column="0"
-                                          RowDefinitions="Auto,*"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Gateways: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                        <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right"
-                                                      ItemsSource="{Binding GatewayAddresses}" />
+                                </Border>
+                                <GridSplitter Grid.Column="1" Margin="15,0,15,0" />
+                                <Border Grid.Column="2" Margin="0,5,5,5" Classes="frame">
+                                    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*">
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="0"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Outgoing Packets Discarded: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding OutgoingPacketsDiscarded}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="1"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Incoming Packets Discarded: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding IncomingPacketsDiscarded}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="2"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Incoming Packets With Errors: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding IncomingPacketsWithErrors}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="3"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Outgoing Packets With Errors: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding OutgoingPacketsWithErrors}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="4"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Output Queue Length: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding OutputQueueLength}" />
+                                        </Grid>
+                                        <Grid ClipToBounds="True" Margin="2" Grid.Row="5"
+                                              ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       Text="Incoming Unknown Protocol Packets: " />
+                                            <Rectangle Classes="connector" Grid.Column="1" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                                                       Text="{Binding IncomingUnknownProtocolPackets}" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="3" Grid.Column="0"
-                                          RowDefinitions="Auto,*"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="DNS Servers: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                        <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right"
-                                                      ItemsSource="{Binding DnsAddresses}" />
+                                </Border>
+                            </Grid>
+                        </Expander>
+                    </Border>
+                    <Border Margin="10,10,10,0" IsVisible="{Binding HasArp}" Classes="frame">
+                        <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                  IsExpanded="{Binding IsArpTableExpanded}">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Classes="exLabel" Text="ARP Table:" />
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                            <Border Classes="frame" Margin="5" HorizontalAlignment="Stretch">
+                                <StackPanel Margin="10" HorizontalAlignment="Stretch">
+                                    <Grid ClipToBounds="True"
+                                          ColumnDefinitions="*,Auto,*,Auto,*"
+                                          HorizontalAlignment="Stretch">
+                                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="IP Address" />
+                                        <Border Grid.Column="1" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="MAC Address" />
+                                        <Border Grid.Column="3" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="4" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Vendor" />
                                     </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="4" Grid.Column="0"
-                                          RowDefinitions="Auto,*"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="DHCP Servers: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                        <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right"
-                                                      ItemsSource="{Binding DhcpAddresses}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="5" Grid.Column="0"
-                                          RowDefinitions="Auto,*"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Wins Servers: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                        <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right"
-                                                      ItemsSource="{Binding WinsServerAddresses}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="6" Grid.Column="0"
-                                          RowDefinitions="Auto,*"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Anycast Addresses: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                        <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                      HorizontalAlignment="Right"
-                                                      ItemsSource="{Binding AnycastAddresses}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <GridSplitter Grid.Column="1" Margin="15,0,15,0" />
-                            <Border Grid.Column="2" Margin="0,5,5,5" Classes="frame">
-                                <Grid ClipToBounds="True" Margin="2"
-                                      RowDefinitions="Auto,*"
-                                      ColumnDefinitions="Auto,*,Auto">
-                                    <TextBlock HorizontalAlignment="Left"
-                                               Text="Multicast Addresses: " />
-                                    <Rectangle Classes="connector" Grid.Column="1" Grid.Row="0" />
-                                    <ItemsControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                                  ItemsSource="{Binding MulticastAddresses}" />
-                                </Grid>
-                            </Border>
-                        </Grid>
-                    </Expander>
-                </Border>
-                <Border Margin="10,10,10,0" Classes="frame">
-                    <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                              IsExpanded="{Binding IsStatisticsExpanded}">
-                        <Expander.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Classes="exLabel" Text="Statistics:" />
-                            </DataTemplate>
-                        </Expander.HeaderTemplate>
-                        <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto,*">
-                            <Border Margin="5,5,0,5" Classes="frame">
-                                <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*">
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="0" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Bytes Sent: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding BytesSent}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="1" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left" Text="Bytes Received: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding BytesReceived}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="2" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Unicast Packets Sent: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding UnicastPacketsSent}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="3" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Unicast Packets Received: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding UnicastPacketsReceived}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="4" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Non-Unicast Packets Sent: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding NonUnicastPacketsSent}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="5" Grid.Column="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Non-Unicast Packets Received: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding NonUnicastPacketsReceived}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <GridSplitter Grid.Column="1" Margin="15,0,15,0" />
-                            <Border Grid.Column="2" Margin="0,5,5,5" Classes="frame">
-                                <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*">
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="0"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Outgoing Packets Discarded: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding OutgoingPacketsDiscarded}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="1"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Incoming Packets Discarded: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding IncomingPacketsDiscarded}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="2"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Incoming Packets With Errors: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding IncomingPacketsWithErrors}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="3"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Outgoing Packets With Errors: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding OutgoingPacketsWithErrors}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="4"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Output Queue Length: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding OutputQueueLength}" />
-                                    </Grid>
-                                    <Grid ClipToBounds="True" Margin="2" Grid.Row="5"
-                                          ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="Incoming Unknown Protocol Packets: " />
-                                        <Rectangle Classes="connector" Grid.Column="1" />
-                                        <TextBlock Grid.Column="2" HorizontalAlignment="Right"
-                                                   Text="{Binding IncomingUnknownProtocolPackets}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </Grid>
-                    </Expander>
-                </Border>
-                <Border Margin="10,10,10,10" IsVisible="{Binding HasArp}" Classes="frame">
-                    <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                              IsExpanded="{Binding IsArpTableExpanded}">
-                        <Expander.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Classes="exLabel" Text="ARP Table:" />
-                            </DataTemplate>
-                        </Expander.HeaderTemplate>
-                        <Border Classes="frame" Margin="5" HorizontalAlignment="Stretch">
-                            <StackPanel HorizontalAlignment="Stretch">
-                                <Grid ClipToBounds="True"
-                                      ColumnDefinitions="*,Auto,*,Auto,*"
-                                      HorizontalAlignment="Stretch">
-                                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="IP Address" />
-                                    <Border Grid.Column="1" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="MAC Address" />
-                                    <Border Grid.Column="3" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="4" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Vendor" />
-                                </Grid>
-                                <Border Height="1" Margin="10,5,10,5" Background="White" Opacity=".05" />
-                                <ItemsControl ItemsSource="{Binding FilteredArpEntryModels}"
-                                              HorizontalAlignment="Stretch">
+                                    <Border Height="1" Margin="10,5,10,5" Background="White" Opacity=".05" />
+                                    <ItemsControl ItemsSource="{Binding FilteredArpEntryModels}"
+                                                  HorizontalAlignment="Stretch">
 
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Spacing="3" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ColumnDefinitions="*,Auto,*,Auto,*">
-                                                <TextBlock Grid.Column="0" HorizontalAlignment="Center"
-                                                           Text="{Binding IpAddress}" />
-                                                <Border Grid.Column="1" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="2" HorizontalAlignment="Center"
-                                                           Text="{Binding MacAddress}" />
-                                                <Border Grid.Column="3" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="4" HorizontalAlignment="Center"
-                                                           Text="{Binding Vendor}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </Expander>
-                </Border>
-                <Border Margin="10,0,10,10" Classes="frame" IsVisible="{Binding HasRoutes}">
-                    <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                              IsExpanded="{Binding IsRouteTableExpanded}">
-                        <Expander.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Classes="exLabel" Text="Routes:" />
-                            </DataTemplate>
-                        </Expander.HeaderTemplate>
-                        <Border Name="RouteContainer" Classes="frame" Margin="5" HorizontalAlignment="Stretch">
-                            <StackPanel HorizontalAlignment="Stretch">
-                                <Grid ClipToBounds="True"
-                                      ColumnDefinitions="*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*"
-                                      HorizontalAlignment="Stretch">
-                                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Destination" />
-                                    <Border Grid.Column="1" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Mask" />
-                                    <Border Grid.Column="3" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="4" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Next Hop" />
-                                    <Border Grid.Column="5" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="6" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Type" />
-                                    <Border Grid.Column="7" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="8" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Protocol" />
-                                    <Border Grid.Column="9" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="10" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Age" />
-                                    <Border Grid.Column="11" Classes="routeSplitter" />
-                                    <TextBlock Grid.Column="12" HorizontalAlignment="Center" FontWeight="Bold"
-                                               Text="Metric" />
-                                </Grid>
-                                <Border Height="1" Margin="10,5,10,5" Background="White" Opacity=".05" />
-                                <ItemsControl ItemsSource="{Binding RouteRowModels}"
-                                              HorizontalAlignment="Stretch">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Spacing="3" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ColumnDefinitions="*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*">
-                                                <TextBlock Grid.Column="0" HorizontalAlignment="Center"
-                                                           Text="{Binding Destination}" />
-                                                <Border Grid.Column="1" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="2" HorizontalAlignment="Center"
-                                                           Text="{Binding Mask}" />
-                                                <Border Grid.Column="3" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="4" HorizontalAlignment="Center"
-                                                           Text="{Binding NextHop}" />
-                                                <Border Grid.Column="5" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="6" HorizontalAlignment="Center"
-                                                           Text="{Binding Type}" />
-                                                <Border Grid.Column="7" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="8" HorizontalAlignment="Center"
-                                                           Text="{Binding Proto}" />
-                                                <Border Grid.Column="9" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="10" HorizontalAlignment="Center"
-                                                           Text="{Binding Age}" />
-                                                <Border Grid.Column="11" Classes="routeSplitter" />
-                                                <TextBlock Grid.Column="12" HorizontalAlignment="Center"
-                                                           Text="{Binding Metric1}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </Expander>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
-        <!-- </Border> -->
-    </Grid>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="3" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="*,Auto,*,Auto,*">
+                                                    <SelectableTextBlock Grid.Column="0" HorizontalAlignment="Center"
+                                                                         Text="{Binding IpAddress}" />
+                                                    <Border Grid.Column="1" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Center"
+                                                                         Text="{Binding MacAddress}" />
+                                                    <Border Grid.Column="3" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="4" HorizontalAlignment="Center"
+                                                                         Text="{Binding Vendor}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Expander>
+                    </Border>
+                    <Border Margin="10" Classes="frame" IsVisible="{Binding HasRoutes}">
+                        <Expander HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                  IsExpanded="{Binding IsRouteTableExpanded}">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Classes="exLabel" Text="Routes:" />
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                            <Border Name="RouteContainer" Classes="frame" Margin="5" HorizontalAlignment="Stretch">
+                                <StackPanel Margin="10" HorizontalAlignment="Stretch">
+                                    <Grid ClipToBounds="True"
+                                          ColumnDefinitions="*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*"
+                                          HorizontalAlignment="Stretch">
+                                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Destination" />
+                                        <Border Grid.Column="1" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Mask" />
+                                        <Border Grid.Column="3" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="4" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Next Hop" />
+                                        <Border Grid.Column="5" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="6" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Type" />
+                                        <Border Grid.Column="7" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="8" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Protocol" />
+                                        <Border Grid.Column="9" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="10" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Age" />
+                                        <Border Grid.Column="11" Classes="routeSplitter" />
+                                        <TextBlock Grid.Column="12" HorizontalAlignment="Center" FontWeight="Bold"
+                                                   Text="Metric" />
+                                    </Grid>
+                                    <Border Height="1" Margin="10,5,10,5" Background="White" Opacity=".05" />
+                                    <ItemsControl ItemsSource="{Binding RouteRowModels}"
+                                                  HorizontalAlignment="Stretch">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="3" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*">
+                                                    <SelectableTextBlock Grid.Column="0" HorizontalAlignment="Center"
+                                                                         Text="{Binding Destination}" />
+                                                    <Border Grid.Column="1" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="2" HorizontalAlignment="Center"
+                                                                         Text="{Binding Mask}" />
+                                                    <Border Grid.Column="3" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="4" HorizontalAlignment="Center"
+                                                                         Text="{Binding NextHop}" />
+                                                    <Border Grid.Column="5" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="6" HorizontalAlignment="Center"
+                                                                         Text="{Binding Type}" />
+                                                    <Border Grid.Column="7" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="8" HorizontalAlignment="Center"
+                                                                         Text="{Binding Proto}" />
+                                                    <Border Grid.Column="9" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="10" HorizontalAlignment="Center"
+                                                                         Text="{Binding Age}" />
+                                                    <Border Grid.Column="11" Classes="routeSplitter" />
+                                                    <SelectableTextBlock Grid.Column="12" HorizontalAlignment="Center"
+                                                                         Text="{Binding Metric1}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Expander>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            <Border Grid.Row="0" Classes="frame" Margin="10,10,10,10">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="Filter ARP Table:  " />
+                        <TextBox FontSize="12" Watermark="Enter search text..." VerticalAlignment="Center"
+                                 MinWidth="200"
+                                 Text="{Binding ArpTableFilterText}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="10,0,0,0" Orientation="Horizontal">
+                        <Button Content="Expand All" Command="{Binding ExpandAll}" />
+                        <Button Margin="10,0,0,0" Content="Collapse All" Command="{Binding CollapseAll}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Grid.Row="2" Classes="frame" Margin="10">
+                <Grid ColumnDefinitions="Auto,Auto,*,Auto" Margin="10" HorizontalAlignment="Stretch">
+                    <TextBlock VerticalAlignment="Center" Text="Select Interface:  " />
+                    <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding InterfaceModels}"
+                              SelectedIndex="{Binding SelectedInterface}" />
+                    <StackPanel Grid.Column="3" Margin="10,0,0,0" Orientation="Horizontal">
+                        <TextBlock Text="Auto Refresh:  " VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding DoRefresh}" Margin="0,0,10,0" />
+                        <TextBlock Text="Refresh Interval (s):  " VerticalAlignment="Center" />
+                        <NumericUpDown Minimum="1" Maximum="60" AllowSpin="True" ParsingNumberStyle="Integer"
+                                       IsEnabled="{Binding DoRefresh}" Value="{Binding RefreshInterval}" Increment="1"
+                                       MinWidth="60" />
+                        <Button Content="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding !DoRefresh}"
+                                Margin="10,0,0,0" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

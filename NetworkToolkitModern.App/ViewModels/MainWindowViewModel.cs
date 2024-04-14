@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
@@ -16,11 +15,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private static readonly HttpClient Client = new();
     private static readonly Ping Ping = new();
     [ObservableProperty] private string _connectionStatus = string.Empty;
-    [ObservableProperty] private string _publicIpAddress = string.Empty;
-    [ObservableProperty] private int _selectedTab;
-    private Timer _refreshTimer;
 
     [ObservableProperty] private ObservableCollection<InterfaceModel> _interfaceModels = new();
+    [ObservableProperty] private string _publicIpAddress = string.Empty;
+    private Timer _refreshTimer;
+    [ObservableProperty] private int _selectedTab;
 
     public MainWindowViewModel(ScanViewModel scanViewModel, PingViewModel pingViewModel,
         TracerouteViewModel tracerouteViewModel, IpConfigViewModel ipConfigViewModel, SnmpViewModel snmpViewModel)
@@ -32,7 +31,7 @@ public partial class MainWindowViewModel : ViewModelBase
         SnmpViewModel = snmpViewModel;
         _refreshTimer = new Timer(StatusLoop, null, 0, 3000);
     }
-    
+
     public MainWindowViewModel()
     {
         ScanViewModel = new ScanViewModel();

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -37,7 +35,7 @@ public partial class ScanView : UserControl
         var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
         clipboard?.SetTextAsync(GetCellText(sender));
     }
-    
+
     private void CopyMac_OnClick(object? sender, RoutedEventArgs e)
     {
         var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;

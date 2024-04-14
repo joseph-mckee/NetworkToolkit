@@ -9,12 +9,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NetworkToolkitModern.App.Models;
-using NetworkToolkitModern.App.Views;
 using NetworkToolkitModern.Lib.Arp;
 using NetworkToolkitModern.Lib.IP;
 using NetworkToolkitModern.Lib.Ping;
@@ -25,21 +23,21 @@ namespace NetworkToolkitModern.App.ViewModels;
 
 public partial class ScanViewModel : ViewModelBase
 {
-    private readonly List<IPAddress> _localNetwork;
     private readonly Stopwatch _stopwatch = new();
     private readonly DispatcherTimer _timer = new();
     private readonly VendorLookup _vendorLookup = new();
     private CancellationTokenSource? _cancellationTokenSource;
     [ObservableProperty] private string _elapsed = "00:00:00";
+    [ObservableProperty] private ObservableCollection<ScannedHostModel> _filteredScannedHosts = new();
     [ObservableProperty] private int _goal;
     [ObservableProperty] private bool _isScanning;
     [ObservableProperty] private bool _isStopped = true;
+    private List<IPAddress> _localNetwork;
     [ObservableProperty] private int _progress;
     [ObservableProperty] private string _progressText = "Scanned: 0/0";
     [ObservableProperty] private string _rangeInput = "192.168.1.1-192.168.1.254";
-    [ObservableProperty] private ObservableCollection<ScannedHostModel> _scannedHosts = new();
-    [ObservableProperty] private ObservableCollection<ScannedHostModel> _filteredScannedHosts = new();
     [ObservableProperty] private string? _scanFilterText = string.Empty;
+    [ObservableProperty] private ObservableCollection<ScannedHostModel> _scannedHosts = new();
     [ObservableProperty] private int _timeout;
 
     public ScanViewModel()
@@ -48,24 +46,14 @@ public partial class ScanViewModel : ViewModelBase
         ScannedHosts = new ObservableCollection<ScannedHostModel>();
         Progress = 0;
         Goal = 1;
-        var bestInterface = Route.GetBestInterface();
-        var localIp = bestInterface.GetIPProperties().UnicastAddresses
-            .First(ip => ip.Address.AddressFamily.Equals(AddressFamily.InterNetwork)).Address;
-        var localSubnet = bestInterface.GetIPProperties().UnicastAddresses.First(ip => ip.Address.Equals(localIp))
-            .IPv4Mask;
-        var netInf = new NetInfo(localIp, localSubnet);
-        var startAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.NetworkAddress) + 1);
-        var endAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.BroadcastAddress) - 1);
-        RangeInput = $"{startAddress}-{endAddress}";
-        var netInfo = new NetInfo(localIp, localSubnet);
-        _localNetwork = netInfo.GetAddressRangeFromNetwork().ToList();
+        ScanLocalCommand();
     }
 
     partial void OnScannedHostsChanged(ObservableCollection<ScannedHostModel> value)
     {
         OnScanFilterTextChanged(ScanFilterText);
     }
-    
+
     partial void OnScanFilterTextChanged(string? value)
     {
         if (string.IsNullOrEmpty(value))
@@ -73,7 +61,12 @@ public partial class ScanViewModel : ViewModelBase
             FilteredScannedHosts = ScannedHosts;
             return;
         }
-        FilteredScannedHosts = new(ScannedHosts.Where(x => x.Hostname.ToString().ToLower().Contains(value.ToLower()) || x.IpAddress.ToString().ToLower().Contains(value.ToLower()) || x.MacAddress.ToString().ToLower().Contains(value.ToLower()) || x.Vendor.ToString().ToLower().Contains(value.ToLower())).ToList());
+
+        FilteredScannedHosts = new ObservableCollection<ScannedHostModel>(ScannedHosts.Where(x =>
+            x.Hostname.ToString().ToLower().Contains(value.ToLower()) ||
+            x.IpAddress.ToString().ToLower().Contains(value.ToLower()) ||
+            x.MacAddress.ToString().ToLower().Contains(value.ToLower()) ||
+            x.Vendor.ToString().ToLower().Contains(value.ToLower())).ToList());
     }
 
     public void Reset()
@@ -244,7 +237,7 @@ public partial class ScanViewModel : ViewModelBase
                     IpAddress = hostAddress.ToString(),
                     MacAddress = macAddress,
                     Vendor = vendor,
-                    Hostname = name,
+                    Hostname = name
                 });
             });
         }
@@ -255,8 +248,18 @@ public partial class ScanViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task Export()
+    public void ScanLocalCommand()
     {
-        
+        var bestInterface = Route.GetBestInterface();
+        var localIp = bestInterface.GetIPProperties().UnicastAddresses
+            .First(ip => ip.Address.AddressFamily.Equals(AddressFamily.InterNetwork)).Address;
+        var localSubnet = bestInterface.GetIPProperties().UnicastAddresses.First(ip => ip.Address.Equals(localIp))
+            .IPv4Mask;
+        var netInf = new NetInfo(localIp, localSubnet);
+        var startAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.NetworkAddress) + 1);
+        var endAddress = IpMath.BitsToIp(IpMath.IpToBits(netInf.BroadcastAddress) - 1);
+        RangeInput = $"{startAddress}-{endAddress}";
+        var netInfo = new NetInfo(localIp, localSubnet);
+        _localNetwork = netInfo.GetAddressRangeFromNetwork().ToList();
     }
 }

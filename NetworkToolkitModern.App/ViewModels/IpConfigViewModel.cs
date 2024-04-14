@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NetworkToolkitModern.App.Models;
@@ -22,75 +18,75 @@ namespace NetworkToolkitModern.App.ViewModels;
 
 public partial class IpConfigViewModel : ViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<InterfaceModel> _interfaceModels = new();
-    [ObservableProperty] private bool _isFocused;
-    [ObservableProperty] private bool _doRefresh = true;
-    [ObservableProperty] private int _refreshInterval;
-
-    [ObservableProperty] private int _index;
-    [ObservableProperty] private int _metric;
-    [ObservableProperty] private string? _name;
-    [ObservableProperty] private string? _type;
-    [ObservableProperty] private string? _description;
-    [ObservableProperty] private string? _id;
-    [ObservableProperty] private string? _speed;
-    [ObservableProperty] private string? _status;
-    [ObservableProperty] private bool _multicastSupport;
-    [ObservableProperty] private bool _receiveOnly;
-    [ObservableProperty] private bool _usesWins;
-    [ObservableProperty] private bool _dhcpEnabled;
-    [ObservableProperty] private bool _forwardingEnabled;
-    [ObservableProperty] private bool _automaticPrivateAddressingActive;
-    [ObservableProperty] private bool _automaticPrivateAddressingEnabled;
-    [ObservableProperty] private bool _dnsEnabled;
-    [ObservableProperty] private bool _dynamicDnsEnabled;
-    [ObservableProperty] private string? _physicalAddress;
+    private readonly Dictionary<string, string> _vendorCache = new();
+    private readonly VendorLookup _vendorLookup = new();
     [ObservableProperty] private UnicastIPAddressInformationCollection? _addresses;
     [ObservableProperty] private IPAddressInformationCollection? _anycastAddresses;
-    [ObservableProperty] private IPAddressCollection? _dnsAddresses;
-    [ObservableProperty] private string? _dnsSuffix;
-    [ObservableProperty] private GatewayIPAddressInformationCollection? _gatewayAddresses;
-    [ObservableProperty] private MulticastIPAddressInformationCollection? _multicastAddresses;
-    [ObservableProperty] private IPAddressCollection? _dhcpAddresses;
-    [ObservableProperty] private IPAddressCollection? _winsServerAddresses;
-    [ObservableProperty] private string? _subnetMask;
-    [ObservableProperty] private int _mtu;
-    [ObservableProperty] private string? _bytesSent;
-    [ObservableProperty] private string? _bytesReceived;
-    [ObservableProperty] private string? _unicastPacketsSent;
-    [ObservableProperty] private string? _unicastPacketsReceived;
-    [ObservableProperty] private string? _nonUnicastPacketsSent;
-    [ObservableProperty] private string? _nonUnicastPacketsReceived;
-    [ObservableProperty] private string? _outgoingPacketsDiscarded;
-    [ObservableProperty] private string? _incomingPacketsDiscarded;
-    [ObservableProperty] private string? _outgoingPacketsWithErrors;
-    [ObservableProperty] private string? _incomingPacketsWithErrors;
-    [ObservableProperty] private string? _outputQueueLength;
-    [ObservableProperty] private string? _incomingUnknownProtocolPackets;
     [ObservableProperty] private ObservableCollection<ArpEntryModel> _arpEntryModels = new();
-    [ObservableProperty] private ObservableCollection<RouteRowModel> _routeRowModels = new();
-    [ObservableProperty] private ObservableCollection<ArpEntryModel> _filteredArpEntryModels = new();
     [ObservableProperty] private string? _arpTableFilterText = string.Empty;
+    [ObservableProperty] private bool _automaticPrivateAddressingActive;
+    [ObservableProperty] private bool _automaticPrivateAddressingEnabled;
+    [ObservableProperty] private string? _bytesReceived;
+    [ObservableProperty] private string? _bytesSent;
+    private string _cachedFilterText = string.Empty;
+    [ObservableProperty] private string? _description;
+    [ObservableProperty] private IPAddressCollection? _dhcpAddresses;
+    [ObservableProperty] private bool _dhcpEnabled;
+    [ObservableProperty] private IPAddressCollection? _dnsAddresses;
+    [ObservableProperty] private bool _dnsEnabled;
+    [ObservableProperty] private string? _dnsSuffix;
+    [ObservableProperty] private bool _doRefresh = true;
+    [ObservableProperty] private bool _dynamicDnsEnabled;
+    [ObservableProperty] private ObservableCollection<ArpEntryModel> _filteredArpEntryModels = new();
+    [ObservableProperty] private bool _forwardingEnabled;
+    [ObservableProperty] private GatewayIPAddressInformationCollection? _gatewayAddresses;
 
     [ObservableProperty] private bool _hasArp;
     [ObservableProperty] private bool _hasRoutes;
+    [ObservableProperty] private string? _id;
+    [ObservableProperty] private string? _incomingPacketsDiscarded;
+    [ObservableProperty] private string? _incomingPacketsWithErrors;
+    [ObservableProperty] private string? _incomingUnknownProtocolPackets;
+
+    [ObservableProperty] private int _index;
+    [ObservableProperty] private ObservableCollection<InterfaceModel> _interfaceModels = new();
+    [ObservableProperty] private bool _isAddressInfoExpanded = true;
+    [ObservableProperty] private bool _isArpTableExpanded = true;
+    [ObservableProperty] private bool _isFocused;
 
     [ObservableProperty] private bool _isInterfaceInfoExpanded = true;
-    [ObservableProperty] private bool _isAddressInfoExpanded = true;
-    [ObservableProperty] private bool _isStatisticsExpanded = true;
     [ObservableProperty] private bool _isRouteTableExpanded = true;
-    [ObservableProperty] private bool _isArpTableExpanded = true;
+    [ObservableProperty] private bool _isStatisticsExpanded = true;
+    [ObservableProperty] private int _mtu;
+    [ObservableProperty] private MulticastIPAddressInformationCollection? _multicastAddresses;
+    [ObservableProperty] private bool _multicastSupport;
+
+    // private int _metric;
+    [ObservableProperty] private string? _name;
+    [ObservableProperty] private string? _nonUnicastPacketsReceived;
+    [ObservableProperty] private string? _nonUnicastPacketsSent;
+    [ObservableProperty] private string? _outgoingPacketsDiscarded;
+    [ObservableProperty] private string? _outgoingPacketsWithErrors;
+    [ObservableProperty] private string? _outputQueueLength;
+    [ObservableProperty] private string? _physicalAddress;
+    [ObservableProperty] private bool _receiveOnly;
+    [ObservableProperty] private int? _refreshInterval;
 
     private Timer? _refreshTimer;
+    [ObservableProperty] private ObservableCollection<RouteRowModel> _routeRowModels = new();
     [ObservableProperty] private int _selectedInterface;
-    private readonly VendorLookup _vendorLookup = new();
-    private readonly Dictionary<string, string> _vendorCache = new();
-    private string _cachedFilterText = string.Empty;
+    [ObservableProperty] private string? _speed;
+    [ObservableProperty] private string? _status;
+    [ObservableProperty] private string? _subnetMask;
+    [ObservableProperty] private string? _type;
+    [ObservableProperty] private string? _unicastPacketsReceived;
+    [ObservableProperty] private string? _unicastPacketsSent;
+    [ObservableProperty] private bool _usesWins;
+    [ObservableProperty] private IPAddressCollection? _winsServerAddresses;
 
     public IpConfigViewModel()
     {
         Update();
-        SelectedInterface = 0;
         RefreshInterval = 1;
         FilteredArpEntryModels = ArpEntryModels;
     }
@@ -99,7 +95,7 @@ public partial class IpConfigViewModel : ViewModelBase
     {
         if (string.IsNullOrEmpty(ArpTableFilterText))
         {
-            FilteredArpEntryModels = ArpEntryModels;
+            FilteredArpEntryModels = value;
             return;
         }
 
@@ -115,21 +111,27 @@ public partial class IpConfigViewModel : ViewModelBase
         }
 
         _cachedFilterText = value;
-        FilteredArpEntryModels = new(ArpEntryModels.Where(x =>
-            x.Vendor.ToLower().Contains(value.ToLower()) || x.IpAddress.ToLower().Contains(value.ToLower()) ||
-            x.MacAddress.ToLower().Contains(value.ToLower())).ToList());
+
+        // Assigns entry models containing filter text to the UI bound collection.
+        FilteredArpEntryModels = new ObservableCollection<ArpEntryModel>(ArpEntryModels
+            .Where(x =>
+                x.Vendor.ToLower().Contains(value.ToLower()) ||
+                x.IpAddress.ToLower().Contains(value.ToLower()) ||
+                x.MacAddress.ToLower().Contains(value.ToLower())).ToList());
     }
 
     partial void OnDoRefreshChanged(bool value)
     {
+        if (RefreshInterval is null) return;
         if (!value) _refreshTimer?.Dispose();
-        else _refreshTimer = new Timer(Refresh, null, 0, RefreshInterval * 1000);
+        else _refreshTimer = new Timer(Refresh, null, 0, RefreshInterval.Value * 1000);
     }
 
-    partial void OnRefreshIntervalChanged(int value)
+    partial void OnRefreshIntervalChanged(int? value)
     {
+        if (value is null) return;
         _refreshTimer?.Dispose();
-        _refreshTimer = new Timer(Refresh, null, 0, value * 1000);
+        _refreshTimer = new Timer(Refresh, null, 0, value.Value * 1000);
     }
 
     partial void OnSelectedInterfaceChanged(int value)
@@ -158,10 +160,17 @@ public partial class IpConfigViewModel : ViewModelBase
         IsArpTableExpanded = false;
     }
 
+    /// <summary>
+    ///     Updates the UI with new information from the given network interface.
+    /// </summary>
     [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
-    private void UpdateCurrentInterface(NetworkInterface networkInterface)
+    private void UpdateInterfaceDisplay(NetworkInterface networkInterface)
     {
-        Metric = Route.GetMetric(networkInterface);
+        // _metric = Route.GetMetric(networkInterface); May remove.
+
+        // Most of this function is just reassigning UI bound properties to updated values from the passed network interface.
+        // It tries to do this only when necessary to allow more interactivity between refreshes.
+
         if (Name != networkInterface.Name) Name = networkInterface.Name;
         if (Type != networkInterface.NetworkInterfaceType.ToString())
             Type = networkInterface.NetworkInterfaceType.ToString();
@@ -171,43 +180,51 @@ public partial class IpConfigViewModel : ViewModelBase
         if (Status != networkInterface.OperationalStatus.ToString())
             Status = networkInterface.OperationalStatus.ToString();
         if (ReceiveOnly != networkInterface.IsReceiveOnly) ReceiveOnly = networkInterface.IsReceiveOnly;
+
+        // Converts the MAC address to the *proper* formatting before assignment.
         var rawMacAddress = networkInterface.GetPhysicalAddress().ToString();
         var formattedMacAddress = new StringBuilder(rawMacAddress);
         for (var i = 2; i < formattedMacAddress.Length; i += 3) formattedMacAddress.Insert(i, ":");
         if (PhysicalAddress != formattedMacAddress.ToString()) PhysicalAddress = formattedMacAddress.ToString();
-        var props = networkInterface.GetIPProperties();
-        Addresses = props.UnicastAddresses;
-        AnycastAddresses = props.AnycastAddresses;
-        DnsAddresses = props.DnsAddresses;
-        if (DnsSuffix != props.DnsSuffix) DnsSuffix = props.DnsSuffix;
-        GatewayAddresses = props.GatewayAddresses;
-        MulticastAddresses = props.MulticastAddresses;
-        DhcpAddresses = props.DhcpServerAddresses;
-        if (DynamicDnsEnabled != props.IsDynamicDnsEnabled) DynamicDnsEnabled = props.IsDynamicDnsEnabled;
-        var subnetMask = Addresses.FirstOrDefault(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork)
-            ?.IPv4Mask.ToString();
-        if (SubnetMask != subnetMask) SubnetMask = subnetMask ?? string.Empty;
 
+        var ipProperties = networkInterface.GetIPProperties();
+        Addresses = ipProperties.UnicastAddresses;
+        AnycastAddresses = ipProperties.AnycastAddresses;
+        DnsAddresses = ipProperties.DnsAddresses;
+        if (DnsSuffix != ipProperties.DnsSuffix) DnsSuffix = ipProperties.DnsSuffix;
+        GatewayAddresses = ipProperties.GatewayAddresses;
+        MulticastAddresses = ipProperties.MulticastAddresses;
+        DhcpAddresses = ipProperties.DhcpServerAddresses;
+        if (DynamicDnsEnabled != ipProperties.IsDynamicDnsEnabled) DynamicDnsEnabled = ipProperties.IsDynamicDnsEnabled;
+
+        // Some interfaces will only have IPv4 or IPv6 and not both.
+        // This will handle either case.
         try
         {
-            var properties = networkInterface.GetIPProperties().GetIPv4Properties();
-            if (Index != properties.Index) Index = properties.Index;
-            if (Mtu != properties.Mtu) Mtu = properties.Mtu;
-            if (UsesWins != properties.UsesWins) UsesWins = properties.UsesWins;
-            if (DhcpEnabled != properties.IsDhcpEnabled) DhcpEnabled = properties.IsDhcpEnabled;
-            if (ForwardingEnabled != properties.IsForwardingEnabled) ForwardingEnabled = properties.IsForwardingEnabled;
-            if (AutomaticPrivateAddressingActive != properties.IsAutomaticPrivateAddressingActive)
-                AutomaticPrivateAddressingActive = properties.IsAutomaticPrivateAddressingActive;
-            if (AutomaticPrivateAddressingEnabled != properties.IsAutomaticPrivateAddressingEnabled)
-                AutomaticPrivateAddressingEnabled = properties.IsAutomaticPrivateAddressingEnabled;
+            // Attempts to retrieve from IPv4 properties.
+            var iPv4Properties = networkInterface.GetIPProperties().GetIPv4Properties();
+            if (Index != iPv4Properties.Index) Index = iPv4Properties.Index;
+            if (Mtu != iPv4Properties.Mtu) Mtu = iPv4Properties.Mtu;
+            if (UsesWins != iPv4Properties.UsesWins) UsesWins = iPv4Properties.UsesWins;
+            if (DhcpEnabled != iPv4Properties.IsDhcpEnabled) DhcpEnabled = iPv4Properties.IsDhcpEnabled;
+            if (ForwardingEnabled != iPv4Properties.IsForwardingEnabled)
+                ForwardingEnabled = iPv4Properties.IsForwardingEnabled;
+            if (AutomaticPrivateAddressingActive != iPv4Properties.IsAutomaticPrivateAddressingActive)
+                AutomaticPrivateAddressingActive = iPv4Properties.IsAutomaticPrivateAddressingActive;
+            if (AutomaticPrivateAddressingEnabled != iPv4Properties.IsAutomaticPrivateAddressingEnabled)
+                AutomaticPrivateAddressingEnabled = iPv4Properties.IsAutomaticPrivateAddressingEnabled;
         }
-        catch (NetworkInformationException)
+        catch (NetworkInformationException e)
         {
-            var properties = networkInterface.GetIPProperties().GetIPv6Properties();
-            if (Index != properties.Index) Index = properties.Index;
-            if (Mtu != properties.Mtu) Mtu = properties.Mtu;
+            // Falls back only if certain that IPv4 is not supported.
+            // Much fewer details are relevant or available.
+            if (e.ErrorCode != 10043) throw;
+            var iPv6Properties = networkInterface.GetIPProperties().GetIPv6Properties();
+            if (Index != iPv6Properties.Index) Index = iPv6Properties.Index;
+            if (Mtu != iPv6Properties.Mtu) Mtu = iPv6Properties.Mtu;
         }
 
+        // Interface Statistics:
         var statistics = networkInterface.GetIPStatistics();
         BytesSent = statistics.BytesSent.ToString("N0");
         BytesReceived = statistics.BytesReceived.ToString("N0");
@@ -222,27 +239,42 @@ public partial class IpConfigViewModel : ViewModelBase
         OutputQueueLength = statistics.OutputQueueLength.ToString("N0");
         IncomingUnknownProtocolPackets = statistics.IncomingUnknownProtocolPackets.ToString("N0");
 
-        var arpEntries = Arp.GetArpCache();
-        var relevantEntries = arpEntries.Where(x => x.Index == Index).ToList();
-        HasArp = relevantEntries.Any();
-        ArpEntryModels = new();
-        foreach (var entry in relevantEntries)
+        // Get ARP entries and filter out entries not related to the current interface.
+        var arpEntries = Arp.GetArpCache().Where(x => x.Index == Index).ToList();
+
+        // Decides whether or not to even display an ARP table.
+        HasArp = arpEntries.Any();
+
+        // Must be initialized rather than cleared. For some reason...
+        ArpEntryModels = new ObservableCollection<ArpEntryModel>();
+
+        foreach (var entry in arpEntries)
         {
+            if (entry.MacAddress is null) continue;
+
+            // Logic to add seen ARP entries to a cache to decrease processor use dramatically.
+            // The live updating vendors is not really possible without this.
             if (!_vendorCache.ContainsKey(entry.MacAddress))
                 _vendorCache.Add(entry.MacAddress, _vendorLookup.GetVendorName(entry.MacAddress));
+
             ArpEntryModels.Add(new ArpEntryModel
             {
                 IpAddress = entry.IpAddress,
                 MacAddress = entry.MacAddress,
+                // The vendor of the ARP entry will always exist in the cache before it is assigned to the model.
                 Vendor = _vendorCache[entry.MacAddress]
             });
         }
 
-        var routes = Route.GetRoutes();
-        var relevantRoutes = routes.Where(x => x.IfIndex == Index).ToList();
-        HasRoutes = relevantRoutes.Any();
-        RouteRowModels = new();
-        foreach (var route in relevantRoutes) RouteRowModels.Add(new RouteRowModel(route));
+        // Retrieves route table entries for the current interface.
+        var routes = Route.GetRoutes().Where(x => x.IfIndex == Index).ToList();
+
+        // Decides whether or not to even display a route table.
+        HasRoutes = routes.Any();
+
+        // Initializes the UI collection before adding route entries.
+        RouteRowModels = new ObservableCollection<RouteRowModel>();
+        foreach (var route in routes) RouteRowModels.Add(new RouteRowModel(route));
     }
 
     private void Refresh(object? state)
@@ -250,58 +282,49 @@ public partial class IpConfigViewModel : ViewModelBase
         Task.Run(Update);
     }
 
-    [RelayCommand]
-    public void Update()
+    /// <summary>
+    ///     Everything that needs to happen when a refresh is called to update the UI.
+    /// </summary>
+    private void Update()
     {
+        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
+            .OrderBy(o => o.GetIPStatistics().BytesReceived).Reverse().ToList();
+        var comparedInterfaces = new ObservableCollection<InterfaceModel>();
+        foreach (var networkInterface in networkInterfaces)
+            comparedInterfaces.Add(new InterfaceModel(networkInterface));
+
+        if (InterfaceModels.Count < comparedInterfaces.Count)
+            foreach (var model in comparedInterfaces)
+            {
+                var difference = InterfaceModels.FirstOrDefault(x => x.Index == model.Index);
+                if (difference is null) InterfaceModels.Add(model);
+            }
+
+        if (InterfaceModels.Count > comparedInterfaces.Count)
+            for (var index = 0; index < InterfaceModels.Count; index++)
+            {
+                var model = InterfaceModels[index];
+                var difference = comparedInterfaces.FirstOrDefault(x => x.Index == model.Index);
+                if (difference is null) InterfaceModels.Remove(model);
+            }
+
         try
         {
-            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
-                .OrderBy(o => o.GetIPStatistics().BytesReceived).Reverse().ToList();
-            var comparedInterfaces = new ObservableCollection<InterfaceModel>();
-            foreach (var networkInterface in networkInterfaces)
-            {
-                comparedInterfaces.Add(new InterfaceModel(networkInterface));
-            }
+            var currentInterface =
+                networkInterfaces.FirstOrDefault(x => x.Name == InterfaceModels[SelectedInterface].Name);
+            if (currentInterface is null) return;
 
-            if (InterfaceModels.Count < comparedInterfaces.Count)
-            {
-                foreach (var model in comparedInterfaces)
-                {
-                    var difference = InterfaceModels.FirstOrDefault(x => x.Index == model.Index);
-                    if (difference is null) InterfaceModels.Add(model);
-                }
-            }
-
-            if (InterfaceModels.Count > comparedInterfaces.Count)
-            {
-                for (var index = 0; index < InterfaceModels.Count; index++)
-                {
-                    var model = InterfaceModels[index];
-                    var difference = comparedInterfaces.FirstOrDefault(x => x.Index == model.Index);
-                    if (difference is null) InterfaceModels.Remove(model);
-                }
-            }
-
-            try
-            {
-                var currentInterface =
-                    networkInterfaces.FirstOrDefault(x => x.Name == InterfaceModels[SelectedInterface].Name);
-                if (currentInterface is null)
-                {
-                    return;
-                }
-
-                UpdateCurrentInterface(currentInterface);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                SelectedInterface = 0;
-            }
+            UpdateInterfaceDisplay(currentInterface);
         }
         catch (ArgumentOutOfRangeException)
         {
-            Debug.WriteLine("Caught index out of range bug. Currently brute forcing through it.");
-            throw;
+            SelectedInterface = 0;
         }
+    }
+
+    [RelayCommand]
+    public void RefreshCommand()
+    {
+        Update();
     }
 }

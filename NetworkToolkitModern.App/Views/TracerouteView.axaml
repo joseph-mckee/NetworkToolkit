@@ -13,89 +13,96 @@
         <StyleInclude Source="../Styles/CustomSyles.axaml" />
         <Style Selector="TextBlock.label">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="Margin" Value="10,10,0,10" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
         </Style>
         <Style Selector="TextBox.field">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0,10,10,10" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style Selector="NumericUpDown.field">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,0,10" />
             <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Styles>
-    <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
-        <Border Grid.RowSpan="2" 
-                Classes="frame" Margin="10">
-            <Grid MaxWidth="800" ClipToBounds="True" ColumnDefinitions="*,*"
-                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
-                  HorizontalAlignment="Left">
-                <TextBlock Classes="label" Grid.Row="0" Grid.Column="0"
-                           Text="Host:  " />
-                <TextBox Classes="field" Grid.Row="0" Grid.Column="1"
-                         Text="{Binding Host}"
-                         Watermark="Enter a Hostname or IP" />
-                <TextBlock Classes="label" Grid.Row="2" Grid.Column="0"
-                           Text="Timeout:  " />
-                <TextBox Classes="field" Grid.Row="2" Grid.Column="1"
-                         Text="{Binding Timeout}"
-                         Watermark="Max time to wait for response" />
-                <TextBlock Classes="label" Grid.Row="3" Grid.Column="0"
-                           Text="Delay:  " />
-                <TextBox Classes="field" Grid.Row="3" Grid.Column="1"
-                         Text="{Binding Delay}"
-                         Watermark="Time between pings" />
-                <TextBlock Classes="label" Grid.Row="4" Grid.Column="0"
-                           Text="Max Hops:  " />
-                <TextBox Classes="field" Grid.Row="4" Grid.Column="1"
-                         Text="{Binding Hops}"
-                         Watermark="Max length of path" />
-                <TextBlock Classes="label" Grid.Row="5" Grid.Column="0" Text="Resolve DNS:  " />
-                <CheckBox VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" IsChecked="{Binding DoResolve}" />
-                <TextBlock Margin="0,10,0,0" Classes="label" Grid.Row="7" Grid.Column="0" Text="Source Interface:  " />
-                <ComboBox Margin="0,10,10,0" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1"
-                          ItemsSource="{Binding NetworkInterfaces}"
-                          SelectedIndex="{Binding SelectedIndex}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                                <Label VerticalAlignment="Center" Content=" | " />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding IpAddress}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <StackPanel Margin="0,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="9"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <Button IsEnabled="{Binding IsStopped}" Command="{Binding TraceRoute}" Margin="10,0,10,0"
-                            Content="Start" />
-                    <Button IsEnabled="{Binding IsStarted}" Command="{Binding Stop}" Margin="10,0,10,0" Content="Stop" />
-                    <Button IsEnabled="{Binding IsStopped}" Command="{Binding Reset}" Margin="10,0,10,0"
-                            Content="Reset" />
-                </StackPanel>
+    <Border Classes="frame" Margin="10">
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto" Margin="0">
+            <Grid RowDefinitions="*,Auto">
+                <Border Classes="frame" Margin="10">
+                    <StackPanel Margin="15" MaxWidth="800" ClipToBounds="True"
+                                HorizontalAlignment="Stretch">
+                        <TextBlock Classes="label"
+                                   Text="Host:  " />
+                        <TextBox Classes="field"
+                                 Text="{Binding Host}"
+                                 Watermark="Enter a Hostname or IP" />
+                        <TextBlock Classes="label"
+                                   Text="Timeout:  " />
+                        <NumericUpDown Classes="field"
+                                 Value="{Binding Timeout}" Watermark="Max time to wait for response"
+                                 ParsingNumberStyle="Integer" Minimum="1" Increment="1000" Maximum="2147483647" />
+                        <TextBlock Classes="label"
+                                   Text="Delay:  " />
+                        <NumericUpDown Classes="field"
+                                 Value="{Binding Delay}" Watermark="Time between pings"
+                                 ParsingNumberStyle="Integer" Minimum="1" Increment="1000" Maximum="2147483647" />
+                        <TextBlock Classes="label"
+                                   Text="Max Hops:  " />
+                        <NumericUpDown Classes="field"
+                                 Value="{Binding Hops}" Watermark="Max length of path" 
+                                 ParsingNumberStyle="Integer" Minimum="1" Increment="1" Maximum="2147483647" />
+                        <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                            <TextBlock Classes="label" Text="Resolve DNS:  " />
+                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding DoResolve}" />
+                        </StackPanel>
+                        <TextBlock Classes="label" Text="Source IP:  " />
+                        <ComboBox Margin="0,0,0,10" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding NetworkInterfaces}"
+                                  SelectedIndex="{Binding SelectedIndex}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding IpAddress}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Row="1" Classes="frame" Margin="10,0,10,10">
+                    <StackPanel Margin="10" HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom" Orientation="Horizontal">
+                        <Button IsEnabled="{Binding IsStopped}" Command="{Binding TraceRoute}" Margin="0,0,10,0"
+                                Content="Start" />
+                        <Button IsEnabled="{Binding IsStarted}" Command="{Binding Stop}" Margin="0,0,10,0"
+                                Content="Stop" />
+                        <Button IsEnabled="{Binding IsStopped}" Command="{Binding Reset}"
+                                Content="Reset" />
+                    </StackPanel>
+                </Border>
             </Grid>
-        </Border>
-        <Border Grid.Row="0" Grid.Column="1" 
-                Classes="frame" Margin="0,10,10,10">
-            <DataGrid Classes="replyGrid" HorizontalAlignment="Stretch" IsReadOnly="True" CanUserSortColumns="False"
-                      CanUserResizeColumns="True" GridLinesVisibility="Horizontal"
-                      ItemsSource="{Binding TracerouteReplyModels}">
-                <DataGrid.Styles>
-                    <Style Selector="DataGridCell">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                    <Style Selector="DataGridColumnHeader">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                </DataGrid.Styles>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width=".3*" Binding="{Binding Index}" Header="#" />
-                    <DataGridTextColumn Width="*" Binding="{Binding IpAddress}" Header="Reply From" />
-                    <DataGridTextColumn Width=".5*" Binding="{Binding RoundTripTime}" Header="RTT" />
-                    <DataGridTextColumn Width="*" Binding="{Binding Status}" Header="Status" />
-                    <DataGridTextColumn Width="2*" Binding="{Binding HostName}" Header="Hostname" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
-    </Grid>
+            <Border Grid.Row="0" Grid.Column="1"
+                    Classes="frame" Margin="0,10,10,10">
+                <DataGrid Classes="replyGrid" HorizontalAlignment="Stretch" IsReadOnly="True"
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="True" GridLinesVisibility="Horizontal"
+                          ItemsSource="{Binding TracerouteReplyModels}">
+                    <DataGrid.Styles>
+                        <Style Selector="DataGridCell">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style Selector="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGrid.Styles>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width=".3*" Binding="{Binding Index}" Header="#" />
+                        <DataGridTextColumn Width="*" Binding="{Binding IpAddress}" Header="Reply From" />
+                        <DataGridTextColumn Width=".5*" Binding="{Binding RoundTripTime}" Header="RTT" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Status}" Header="Status" />
+                        <DataGridTextColumn Width="2*" Binding="{Binding HostName}" Header="Hostname" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

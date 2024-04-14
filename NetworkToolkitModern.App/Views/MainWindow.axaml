@@ -11,7 +11,7 @@
         Icon="/Assets/LANbow.png"
         Title="Network Toolkit"
         FontSize="12"
-        Width="1280" Height="720">
+        Width="1200" Height="800">
     <Window.Styles>
         <StyleInclude Source="../Styles/CustomSyles.axaml" />
     </Window.Styles>
@@ -38,7 +38,7 @@
             <!-- </TabItem> -->
         </TabControl>
         <Border Grid.Row="1" Classes="frame" Margin="20,0,20,20">
-            <Grid ColumnDefinitions="Auto,Auto,Auto">
+            <Grid Margin="10" ColumnDefinitions="Auto,Auto,Auto">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Your External IP:  " />
                     <SelectableTextBlock Text="{Binding PublicIpAddress}" />
